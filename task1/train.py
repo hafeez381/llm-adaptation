@@ -257,6 +257,9 @@ class Trainer:
             if self.update in cfg["ckpt_updates"]:
                 self.snapshot(keep_weights=self.update in cfg["keep_weights_at"])
         self.write_resources()
+        for name in ("train_log.jsonl", "resources.json", "config.json"):  # results never live only on the VM
+            if (self.run_dir / name).exists():
+                self.store.put(self.run_dir / name, f"{self.run}/results/{name}")
         return rows
 
     def write_resources(self) -> None:
