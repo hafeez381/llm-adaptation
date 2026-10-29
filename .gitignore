@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.DS_Store
+# raw/tokenized data, checkpoints and the fake Hub stay local; only ID files and manifests are committed
+data/cache/
+checkpoints/
+fake_hub/
+*.pt
+*.safetensors
+*.bin
+results/**/*_smoke/
