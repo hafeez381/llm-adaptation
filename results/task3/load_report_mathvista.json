@@ -1,0 +1,28 @@
+{
+  "dataset": "mathvista",
+  "questions": 1000,
+  "rollouts": 32000,
+  "scorer_version": "task3-answers-v1",
+  "gold_not_normalized": [],
+  "no_answer": 3032,
+  "capped": 487,
+  "retained_tokens": 8961703,
+  "rollout_accuracy": 0.54259375,
+  "mc_unmatched_rate": 0.006055420259329955,
+  "mc_unmatched_examples": [
+    [
+      "UNMATCHED:S",
+      89
+    ],
+    [
+      "UNMATCHED:F",
+      2
+    ],
+    [
+      "UNMATCHED:E",
+      1
+    ]
+  ],
+  "free_form_unparsed_rate": 0.03223230490018149,
+  "equivalent_group_pairs_in_full_prefix": 0
+}

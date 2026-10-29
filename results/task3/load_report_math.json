@@ -1,0 +1,12 @@
+{
+  "dataset": "math",
+  "questions": 1000,
+  "rollouts": 32000,
+  "scorer_version": "task3-answers-v1",
+  "gold_not_normalized": [],
+  "no_answer": 521,
+  "capped": 523,
+  "retained_tokens": 20742094,
+  "rollout_accuracy": 0.6631875,
+  "equivalent_group_pairs_in_full_prefix": 0
+}
