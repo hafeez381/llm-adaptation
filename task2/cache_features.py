@@ -84,7 +84,8 @@ def main():
     again = encode(model, proc, paths[:4], device)
     det = max(float((again[i].float() - feats[i].float()).abs().max()) for i, _ in paths[:4])
     one = feats[paths[0][0]].to(device)
-    relayer = float((model.vision_model.post_layernorm(one) - one).abs().max())
+    post_ln = next(m for n, m in model.named_modules() if n.endswith("post_layernorm"))
+    relayer = float((post_ln(one) - one).abs().max())
     del model
     torch.cuda.empty_cache() if device.type == "cuda" else None
 
