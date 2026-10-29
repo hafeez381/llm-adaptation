@@ -45,17 +45,18 @@ def build_model(cfg: dict, device):
         mc.layer_types = mc.layer_types[:mc.num_hidden_layers]
         torch.manual_seed(SEED)
         model = AutoModelForCausalLM.from_config(mc, dtype=torch.float32)
-        if not full:
-            model = model.half()
     else:
+        # adapters too load in FP32 first: the released bf16 weights upcast exactly, so OPLoRA's SVD
+        # sees the same W0 as the FP32 diagnostics (S6); the backbone is cast to FP16 afterwards
         rev = read_json(ROOT / "data/manifest.json")["revisions"][f"hf_model:{cfg['model']}"]
-        model = AutoModelForCausalLM.from_pretrained(cfg["model"], revision=rev,
-                                                     dtype=torch.float32 if full else torch.float16)
+        model = AutoModelForCausalLM.from_pretrained(cfg["model"], revision=rev, dtype=torch.float32)
     model.config.use_cache = False
     if not full:
-        from task1.adapters import attach_adapters  # B2
+        from task1.adapters import attach_adapters, cast_backbone_fp16
         model.requires_grad_(False)
+        model.to(device)  # SVD of 196 matrices runs on the GPU in a full run
         attach_adapters(model, cfg)
+        cast_backbone_fp16(model)
     model.to(device)
     model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     model.train()
@@ -127,7 +128,7 @@ class Trainer:
         self.model = build_model(cfg, self.device)
         self.params = [p for p in self.model.parameters() if p.requires_grad]
         if not self.full:
-            assert_backbone_frozen(self.model, {n for n, p in self.model.named_parameters() if p.requires_grad})
+            assert_backbone_frozen(self.model, {n for n, _ in self.model.named_parameters() if ".lora_" in n})
         self.opt = torch.optim.AdamW(param_groups(self.model, cfg["weight_decay"]), lr=cfg["lr"],
                                      betas=tuple(cfg["betas"]), eps=cfg["eps"])
         self.sched = torch.optim.lr_scheduler.LambdaLR(self.opt, lr_lambda(cfg))
@@ -268,7 +269,8 @@ class Trainer:
             "method": self.cfg["method"], "updates_done": self.update,
             "trainable_params": sum(p.numel() for p in self.params),
             "device": torch.cuda.get_device_name(0) if self.device.type == "cuda" else "cpu",
-            "peak_memory_bytes": peak, **self.timers, "overhead": self.overhead,
+            "peak_memory_bytes": peak, **self.timers,
+            "overhead": self.overhead | getattr(self.model, "adapter_overhead", {}),
             "checkpoint_sizes": getattr(self, "sizes", {})})
 
 

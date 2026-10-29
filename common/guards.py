@@ -40,6 +40,23 @@ def assert_probe_frozen(probe_path, manifest: dict, eval_outputs: list = ()) -> 
         raise GuardError(f"eval outputs predate the probe file: {older[:3]}")
 
 
+def assert_oplora_init_equal(oplora_init: dict, lora16_init: dict, model, tol: float = 1e-5) -> None:
+    """OPLoRA starts from LoRA-16's exact unprojected A and B; its bases are orthonormal."""
+    import torch
+    if oplora_init.keys() != lora16_init.keys():
+        raise GuardError("OPLoRA and LoRA-16 adapt different modules")
+    for n in oplora_init:
+        if not all(torch.equal(oplora_init[n][f], lora16_init[n][f]) for f in ("A", "B")):
+            raise GuardError(f"initial A/B differ at {n}")
+    for n, m in model.named_modules():
+        if getattr(m, "project", False):
+            for basis in (m.U_k, m.V_k):
+                eye = torch.eye(basis.shape[1], device=basis.device)
+                err = (basis.T @ basis - eye).abs().max().item()
+                if err > tol:
+                    raise GuardError(f"basis not orthonormal at {n}: {err:.2e}")
+
+
 def assert_backbone_frozen(model, trainable_names: set[str]) -> None:
     """Exactly `trainable_names` require grad, and no bias trains."""
     actual = {n for n, p in model.named_parameters() if p.requires_grad}
