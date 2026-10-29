@@ -40,6 +40,18 @@ def assert_probe_frozen(probe_path, manifest: dict, eval_outputs: list = ()) -> 
         raise GuardError(f"eval outputs predate the probe file: {older[:3]}")
 
 
+def assert_split_disjoint(image_sets: dict[str, list]) -> None:
+    """Training (all pools together) and each dev / test set share no image with one another."""
+    train = set().union(*(set(v) for k, v in image_sets.items() if k.endswith(("_train", "_pool"))))
+    evals = {k: set(v) for k, v in image_sets.items() if k.endswith(("_dev", "_test"))}
+    groups = {"training": train} | evals
+    names = sorted(groups)
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            if groups[a] & groups[b]:
+                raise GuardError(f"{a} and {b} share {len(groups[a] & groups[b])} images")
+
+
 def assert_oplora_init_equal(oplora_init: dict, lora16_init: dict, model, tol: float = 1e-5) -> None:
     """OPLoRA starts from LoRA-16's exact unprojected A and B; its bases are orthonormal."""
     import torch
@@ -57,12 +69,12 @@ def assert_oplora_init_equal(oplora_init: dict, lora16_init: dict, model, tol: f
                     raise GuardError(f"basis not orthonormal at {n}: {err:.2e}")
 
 
-def assert_backbone_frozen(model, trainable_names: set[str]) -> None:
-    """Exactly `trainable_names` require grad, and no bias trains."""
+def assert_backbone_frozen(model, trainable_names: set[str], bias_ok: tuple[str, ...] = ()) -> None:
+    """Exactly `trainable_names` require grad, and no bias trains outside the `bias_ok` prefixes (the connector)."""
     actual = {n for n, p in model.named_parameters() if p.requires_grad}
     if actual != trainable_names:
         extra, missing = sorted(actual - trainable_names), sorted(trainable_names - actual)
         raise GuardError(f"trainable set wrong: extra={extra[:3]} missing={missing[:3]}")
-    biases = [n for n in actual if n.endswith(".bias")]
+    biases = [n for n in actual if n.endswith(".bias") and not n.startswith(bias_ok)]
     if biases:
         raise GuardError(f"biases train: {biases[:3]}")
