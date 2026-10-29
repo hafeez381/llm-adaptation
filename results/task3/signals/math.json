@@ -1,0 +1,20 @@
+{
+  "questions": 800,
+  "spearman_length_vs_score": {
+    "L": {
+      "mean": 0.22450990220048073,
+      "defined": 800,
+      "excluded": 0
+    },
+    "K": {
+      "mean": -0.16109595817293734,
+      "defined": 800,
+      "excluded": 0
+    }
+  },
+  "quartile_gap_correctness": {
+    "L": 0.07828125,
+    "K": 0.1196875,
+    "length": -0.0459375
+  }
+}

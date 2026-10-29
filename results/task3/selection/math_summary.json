@@ -1,0 +1,650 @@
+{
+  "dev|1|first": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|1|sc": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|1|logp_high": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|1|sc_high": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|1|sc_rwc": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|1|shortest": {
+    "acc": 0.74,
+    "oracle": 0.74,
+    "n_groups": 1.0,
+    "cost": 571.2935,
+    "fail_sampling": 0.26,
+    "fail_selection": 0.0,
+    "questions": 200
+  },
+  "dev|2|first": {
+    "acc": 0.74,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 571.2935,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.0735,
+    "questions": 200
+  },
+  "dev|2|sc": {
+    "acc": 0.74,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 1144.8139999999999,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.0735,
+    "questions": 200
+  },
+  "dev|2|logp_high": {
+    "acc": 0.743,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 1144.8139999999999,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.0705,
+    "questions": 200
+  },
+  "dev|2|sc_high": {
+    "acc": 0.7635,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 1144.8139999999999,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.05,
+    "questions": 200
+  },
+  "dev|2|sc_rwc": {
+    "acc": 0.7635,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 1144.8139999999999,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.05,
+    "questions": 200
+  },
+  "dev|2|shortest": {
+    "acc": 0.765,
+    "oracle": 0.8134999999999999,
+    "n_groups": 1.273,
+    "cost": 1144.8139999999999,
+    "fail_sampling": 0.1865,
+    "fail_selection": 0.048499999999999995,
+    "questions": 200
+  },
+  "dev|4|first": {
+    "acc": 0.74,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 571.2935,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.11600000000000002,
+    "questions": 200
+  },
+  "dev|4|sc": {
+    "acc": 0.7935,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 2281.855,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.0625,
+    "questions": 200
+  },
+  "dev|4|logp_high": {
+    "acc": 0.746,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 2281.855,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.11,
+    "questions": 200
+  },
+  "dev|4|sc_high": {
+    "acc": 0.778,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 2281.855,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.078,
+    "questions": 200
+  },
+  "dev|4|sc_rwc": {
+    "acc": 0.7965000000000001,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 2281.855,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.05949999999999999,
+    "questions": 200
+  },
+  "dev|4|shortest": {
+    "acc": 0.7705000000000001,
+    "oracle": 0.8560000000000001,
+    "n_groups": 1.6784999999999997,
+    "cost": 2281.855,
+    "fail_sampling": 0.144,
+    "fail_selection": 0.0855,
+    "questions": 200
+  },
+  "dev|8|first": {
+    "acc": 0.74,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 571.2935,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.142,
+    "questions": 200
+  },
+  "dev|8|sc": {
+    "acc": 0.82,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 4586.612,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.062,
+    "questions": 200
+  },
+  "dev|8|logp_high": {
+    "acc": 0.7355000000000002,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 4586.612,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.1465,
+    "questions": 200
+  },
+  "dev|8|sc_high": {
+    "acc": 0.77,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 4586.612,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.11200000000000002,
+    "questions": 200
+  },
+  "dev|8|sc_rwc": {
+    "acc": 0.8195,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 4586.612,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.0625,
+    "questions": 200
+  },
+  "dev|8|shortest": {
+    "acc": 0.765,
+    "oracle": 0.882,
+    "n_groups": 2.3035,
+    "cost": 4586.612,
+    "fail_sampling": 0.11800000000000001,
+    "fail_selection": 0.11699999999999999,
+    "questions": 200
+  },
+  "dev|16|first": {
+    "acc": 0.74,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 571.2935,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.17299999999999996,
+    "questions": 200
+  },
+  "dev|16|sc": {
+    "acc": 0.8290000000000001,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 9163.328000000001,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.084,
+    "questions": 200
+  },
+  "dev|16|logp_high": {
+    "acc": 0.7190000000000001,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 9163.328000000001,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.19399999999999998,
+    "questions": 200
+  },
+  "dev|16|sc_high": {
+    "acc": 0.7709999999999999,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 9163.328000000001,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.142,
+    "questions": 200
+  },
+  "dev|16|sc_rwc": {
+    "acc": 0.8265,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 9163.328000000001,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.08650000000000001,
+    "questions": 200
+  },
+  "dev|16|shortest": {
+    "acc": 0.768,
+    "oracle": 0.9129999999999999,
+    "n_groups": 3.2314999999999996,
+    "cost": 9163.328000000001,
+    "fail_sampling": 0.087,
+    "fail_selection": 0.145,
+    "questions": 200
+  },
+  "dev|32|first": {
+    "acc": 0.74,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 571.2935,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.2,
+    "questions": 200
+  },
+  "dev|32|sc": {
+    "acc": 0.825,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 18322.4,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.115,
+    "questions": 200
+  },
+  "dev|32|logp_high": {
+    "acc": 0.705,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 18322.4,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.235,
+    "questions": 200
+  },
+  "dev|32|sc_high": {
+    "acc": 0.755,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 18322.4,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.185,
+    "questions": 200
+  },
+  "dev|32|sc_rwc": {
+    "acc": 0.825,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 18322.4,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.115,
+    "questions": 200
+  },
+  "dev|32|shortest": {
+    "acc": 0.76,
+    "oracle": 0.94,
+    "n_groups": 4.65,
+    "cost": 18322.4,
+    "fail_sampling": 0.06,
+    "fail_selection": 0.18,
+    "questions": 200
+  },
+  "heldout|1|first": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|1|sc": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|1|logp_high": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|1|sc_high": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|1|sc_rwc": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|1|shortest": {
+    "acc": 0.6435,
+    "oracle": 0.6435,
+    "n_groups": 1.0,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.3565,
+    "fail_selection": 0.0,
+    "questions": 800
+  },
+  "heldout|2|first": {
+    "acc": 0.6435,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.08137500000000002,
+    "questions": 800
+  },
+  "heldout|2|sc": {
+    "acc": 0.6435,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 1339.8654999999999,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.08137500000000002,
+    "questions": 800
+  },
+  "heldout|2|logp_high": {
+    "acc": 0.658125,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 1339.8654999999999,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.06675,
+    "questions": 800
+  },
+  "heldout|2|sc_high": {
+    "acc": 0.667625,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 1339.8654999999999,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.057249999999999995,
+    "questions": 800
+  },
+  "heldout|2|sc_rwc": {
+    "acc": 0.667625,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 1339.8654999999999,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.057249999999999995,
+    "questions": 800
+  },
+  "heldout|2|shortest": {
+    "acc": 0.653,
+    "oracle": 0.7248749999999999,
+    "n_groups": 1.37075,
+    "cost": 1339.8654999999999,
+    "fail_sampling": 0.275125,
+    "fail_selection": 0.071875,
+    "questions": 800
+  },
+  "heldout|4|first": {
+    "acc": 0.6435,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.14725000000000002,
+    "questions": 800
+  },
+  "heldout|4|sc": {
+    "acc": 0.6920000000000001,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 2679.694125,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.09875,
+    "questions": 800
+  },
+  "heldout|4|logp_high": {
+    "acc": 0.6725,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 2679.694125,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.11825000000000002,
+    "questions": 800
+  },
+  "heldout|4|sc_high": {
+    "acc": 0.6877500000000001,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 2679.694125,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.10300000000000001,
+    "questions": 800
+  },
+  "heldout|4|sc_rwc": {
+    "acc": 0.6970000000000001,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 2679.694125,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.09375,
+    "questions": 800
+  },
+  "heldout|4|shortest": {
+    "acc": 0.6521250000000001,
+    "oracle": 0.7907500000000001,
+    "n_groups": 1.9275,
+    "cost": 2679.694125,
+    "fail_sampling": 0.20924999999999996,
+    "fail_selection": 0.138625,
+    "questions": 800
+  },
+  "heldout|8|first": {
+    "acc": 0.6435,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.2,
+    "questions": 800
+  },
+  "heldout|8|sc": {
+    "acc": 0.717875,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 5344.108500000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.125625,
+    "questions": 800
+  },
+  "heldout|8|logp_high": {
+    "acc": 0.675375,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 5344.108500000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.168125,
+    "questions": 800
+  },
+  "heldout|8|sc_high": {
+    "acc": 0.7013750000000001,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 5344.108500000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.142125,
+    "questions": 800
+  },
+  "heldout|8|sc_rwc": {
+    "acc": 0.728625,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 5344.108500000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.114875,
+    "questions": 800
+  },
+  "heldout|8|shortest": {
+    "acc": 0.645625,
+    "oracle": 0.8434999999999999,
+    "n_groups": 2.7402499999999996,
+    "cost": 5344.108500000001,
+    "fail_sampling": 0.1565,
+    "fail_selection": 0.19787500000000002,
+    "questions": 800
+  },
+  "heldout|16|first": {
+    "acc": 0.6435,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.24100000000000002,
+    "questions": 800
+  },
+  "heldout|16|sc": {
+    "acc": 0.7311250000000001,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 10677.74275,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.153375,
+    "questions": 800
+  },
+  "heldout|16|logp_high": {
+    "acc": 0.663875,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 10677.74275,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.220625,
+    "questions": 800
+  },
+  "heldout|16|sc_high": {
+    "acc": 0.7069999999999999,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 10677.74275,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.1775,
+    "questions": 800
+  },
+  "heldout|16|sc_rwc": {
+    "acc": 0.7465,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 10677.74275,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.138,
+    "questions": 800
+  },
+  "heldout|16|shortest": {
+    "acc": 0.631625,
+    "oracle": 0.8845000000000001,
+    "n_groups": 4.003,
+    "cost": 10677.74275,
+    "fail_sampling": 0.1155,
+    "fail_selection": 0.252875,
+    "questions": 800
+  },
+  "heldout|32|first": {
+    "acc": 0.6435,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 669.7726250000001,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.27025,
+    "questions": 800
+  },
+  "heldout|32|sc": {
+    "acc": 0.737875,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 21347.0175,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.17587499999999998,
+    "questions": 800
+  },
+  "heldout|32|logp_high": {
+    "acc": 0.64,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 21347.0175,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.27375,
+    "questions": 800
+  },
+  "heldout|32|sc_high": {
+    "acc": 0.70625,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 21347.0175,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.2075,
+    "questions": 800
+  },
+  "heldout|32|sc_rwc": {
+    "acc": 0.7555,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 21347.0175,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.15825,
+    "questions": 800
+  },
+  "heldout|32|shortest": {
+    "acc": 0.62375,
+    "oracle": 0.91375,
+    "n_groups": 5.9025,
+    "cost": 21347.0175,
+    "fail_sampling": 0.08625,
+    "fail_selection": 0.29,
+    "questions": 800
+  }
+}
