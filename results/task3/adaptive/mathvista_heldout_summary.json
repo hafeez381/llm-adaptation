@@ -1,0 +1,48 @@
+{
+  "thresholds_commit": "e54ba1addc638e3b8dfffd0a4a8fac56acd2395a",
+  "always32": {
+    "family": "always32",
+    "tau": null,
+    "gamma": null,
+    "acc": 0.639,
+    "cost": 8897.7575,
+    "rollouts": 32.0,
+    "stop_counts": {
+      "32": 8000
+    }
+  },
+  "agreement": {
+    "family": "agreement",
+    "tau": 0.5,
+    "gamma": null,
+    "acc": 0.629875,
+    "cost": 2938.063625,
+    "rollouts": 8.4475,
+    "stop_counts": {
+      "4": 6103,
+      "8": 620,
+      "32": 1111,
+      "16": 166
+    },
+    "early_stops": 6889,
+    "incorrect_early_stops": 2057,
+    "incorrect_early_where_sc32_correct": 328
+  },
+  "quality": {
+    "family": "quality",
+    "tau": 0.5,
+    "gamma": 0.0,
+    "acc": 0.6335000000000001,
+    "cost": 3296.048625,
+    "rollouts": 9.6275,
+    "stop_counts": {
+      "4": 5547,
+      "8": 826,
+      "16": 240,
+      "32": 1387
+    },
+    "early_stops": 6613,
+    "incorrect_early_stops": 1834,
+    "incorrect_early_where_sc32_correct": 263
+  }
+}

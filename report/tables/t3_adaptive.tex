@@ -1,0 +1,10 @@
+\begin{tabular}{llccccc}\toprule Dataset & Policy & Accuracy & Tokens & Rollouts & Stops at 4/8/16/32 (\%) & Wrong early / recoverable \\ \midrule
+MATH & Fixed 32 & 73.8 & 21347 & 32.0 & 0/0/0/100 & -- \\
+MATH & Agreement $\tau{=}0.625$ & 73.6 & 10139 & 11.8 & 66/6/1/27 & 660 / 51 \\
+MATH & Quality $\tau{=}0.5, \gamma{=}0.0$ & 73.2 & 7663 & 9.0 & 76/6/1/16 & 1152 / 131 \\
+MATH & Fixed 8 (SC) & 71.8 & 5344 & 8.0 & -- & -- \\ \midrule
+MathVista & Fixed 32 & 63.9 & 8898 & 32.0 & 0/0/0/100 & -- \\
+MathVista & Agreement $\tau{=}0.5$ & 63.0 & 2938 & 8.4 & 76/8/2/14 & 2057 / 328 \\
+MathVista & Quality $\tau{=}0.5, \gamma{=}0.0$ & 63.4 & 3296 & 9.6 & 69/10/3/17 & 1834 / 263 \\
+MathVista & Fixed 8 (SC) & 61.4 & 2230 & 8.0 & -- & --
+\bottomrule\end{tabular}
