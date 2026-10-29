@@ -1,0 +1,172 @@
+{
+  "math_selection_disagreement": [
+    {
+      "sid": "test:531",
+      "gold": "-8",
+      "n_disagreeing_questions": 56,
+      "sc": {
+        "rollout": 25,
+        "answer": "-11",
+        "correct": false,
+        "support": 3,
+        "K": 25.4891414642334,
+        "tail": ") is the average of the y-coordinates of the points where the perpendicular from \\( A \\) to the line \\( y = k \\) intersects the parabola. The y-coordinate of \\( A \\) is \\(-11\\), and the y-coordinate of the line \\( y = k \\) must be the average of \\(-11\\) and \\( k \\):\n\\[\nk = \\frac{-11 + k}{2}\n\\]\nSolving for \\( k \\):\n\\[\n2k = -11 + k \\implies k = -11\n\\]\nThus, the value of \\( k \\) is:\n\\[\n\\boxed{-11}\n\\]"
+      },
+      "sc_rwc": {
+        "rollout": 24,
+        "answer": "-11 + \\sqrt{3}",
+        "correct": false,
+        "support": 2,
+        "K": 25.86583709716797,
+        "tail": "\\sqrt{\\frac{3}{4} + (k + 11)^2}.\n\\]\nSince \\( AB = AC \\), we have:\n\\[\n\\sqrt{\\frac{3}{4} + (k + 11)^2} = \\sqrt{\\frac{3}{4} + (k + 11)^2}.\n\\]\nThis implies:\n\\[\nk + 11 = \\pm \\sqrt{3}.\n\\]\nThus, \\( k = -11 + \\sqrt{3} \\) or \\( k = -11 - \\sqrt{3} \\). Since \\( k \\) must be a real number and the problem does not specify which, we can choose either value. The value of \\( k \\) is:\n\\[\n\\boxed{-11 + \\sqrt{3}}.\n\\]"
+      }
+    },
+    {
+      "sid": "test:696",
+      "gold": "\\text{VW}",
+      "n_disagreeing_questions": 56,
+      "sc": {
+        "rollout": 1,
+        "answer": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "correct": false,
+        "support": 3,
+        "K": 19.470685958862305,
+        "tail": " drawn in a way that satisfies the vertical line test. You can draw a line that starts at the top of the letter, goes down to the bottom, and then up again without intersecting the letter more than once.\n\nTherefore, the letters that can be portions of the graph of a function are A, B, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, U, V, W, X, Y, and Z.\n</think>\n\n\\boxed{ABCDEFGHIJKLMNOPQRSTUVWXYZ}"
+      },
+      "sc_rwc": {
+        "rollout": 2,
+        "answer": "BDFGILNPRTUWYZ",
+        "correct": false,
+        "support": 1,
+        "K": 24.018529891967773,
+        "tail": "er does not have any vertical line that intersects it more than once. Thus, it can be a function.\n- **Z**: This letter does not have any vertical line that intersects it more than once. Thus, it can be a function.\n\nNow, we collect the letters that can be portions of the graph of a function: **B, D, F, G, I, K, L, N, P, R, S, T, U, V, W, Y, Z**.\n\nTherefore, the answer is \\(\\boxed{BDFGILNPRTUWYZ}\\)."
+      }
+    }
+  ],
+  "math_premature_stop_agreement": [
+    {
+      "sid": "test:1803",
+      "stop": 8,
+      "early_answer": "\\frac{4}{5}",
+      "fixed32_answer": "\\frac{3}{5}",
+      "gold": "\\frac35",
+      "pool_fraction_correct": 0.5
+    },
+    {
+      "sid": "test:3988",
+      "stop": 4,
+      "early_answer": "4",
+      "fixed32_answer": "16",
+      "gold": "16",
+      "pool_fraction_correct": 0.78125
+    }
+  ],
+  "math_premature_stop_quality": [
+    {
+      "sid": "test:1803",
+      "stop": 8,
+      "early_answer": "\\frac{4}{5}",
+      "fixed32_answer": "\\frac{3}{5}",
+      "gold": "\\frac35",
+      "pool_fraction_correct": 0.5
+    },
+    {
+      "sid": "test:3988",
+      "stop": 4,
+      "early_answer": "4",
+      "fixed32_answer": "16",
+      "gold": "16",
+      "pool_fraction_correct": 0.78125
+    }
+  ],
+  "mathvista_selection_disagreement": [
+    {
+      "sid": "10",
+      "gold": "E",
+      "n_disagreeing_questions": 65,
+      "sc": {
+        "rollout": 12,
+        "answer": "NO_ANSWER",
+        "correct": false,
+        "support": 10,
+        "K": 15.003089904785156,
+        "tail": "le with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line, Circle with a diagonal line"
+      },
+      "visconf_rwc": {
+        "rollout": 11,
+        "answer": "E",
+        "correct": true,
+        "support": 8,
+        "K": 15.131101608276367,
+        "tail": "t seems to be a random sequence.\n\nGiven the options provided, we need to choose the next object in the sequence. The options are:\n\nA. A\nB. B\nC. C\nD. D\nE. E\n\nSince the sequence does not follow a clear pattern, we can assume that the next object should be the one that comes after the last object in the sequence. The last object is \"\u5e72\" (dry).\n\nTherefore, the next object in the sequence is:\n\n\\boxed{E}"
+      }
+    },
+    {
+      "sid": "14",
+      "gold": "A",
+      "n_disagreeing_questions": 65,
+      "sc": {
+        "rollout": 22,
+        "answer": "A",
+        "correct": true,
+        "support": 16,
+        "K": 10.637201309204102,
+        "tail": "\\boxed{A}"
+      },
+      "visconf_rwc": {
+        "rollout": 6,
+        "answer": "NO_ANSWER",
+        "correct": false,
+        "support": 10,
+        "K": 13.895952224731445,
+        "tail": "the small green sedan to the total number of tiny objects**:\n   - There are 3 tiny objects behind the small green sedan.\n   - There are 6 tiny objects in total.\n\n6. **Determine if the number of tiny objects behind the small green sedan is less than the number of tiny objects**:\n   - 3 (tiny objects behind the small green sedan) is less than 6 (total tiny objects).\n\nTherefore, the answer is A. Yes."
+      }
+    }
+  ],
+  "mathvista_premature_stop_agreement": [
+    {
+      "sid": "434",
+      "stop": 4,
+      "early_answer": "C",
+      "fixed32_answer": "A",
+      "gold": "A",
+      "pool_fraction_correct": 0.53125
+    },
+    {
+      "sid": "689",
+      "stop": 4,
+      "early_answer": "B",
+      "fixed32_answer": "A",
+      "gold": "A",
+      "pool_fraction_correct": 0.5
+    }
+  ],
+  "mathvista_premature_stop_quality": [
+    {
+      "sid": "434",
+      "stop": 4,
+      "early_answer": "C",
+      "fixed32_answer": "A",
+      "gold": "A",
+      "pool_fraction_correct": 0.53125
+    },
+    {
+      "sid": "689",
+      "stop": 4,
+      "early_answer": "B",
+      "fixed32_answer": "A",
+      "gold": "A",
+      "pool_fraction_correct": 0.5
+    }
+  ],
+  "live_revision": {
+    "wrong_to_correct": {
+      "sid": "test:2358",
+      "position": 36,
+      "gold": "2 \\sqrt{5}",
+      "initial_answer": null,
+      "revised_answer": "2\\sqrt{5}",
+      "revision_tail": "+ b \\sqrt{b} = \\sqrt{(a \\sqrt{a} + b \\sqrt{b})^2}.\n\\]\n\nExpanding and simplifying:\n\\[\n(a \\sqrt{a} + b \\sqrt{b})^2 = a^3 + b^3 + 2ab \\sqrt{ab} = a^3 + b^3 + 2.\n\\]\n\nSince \\(a^2 = 3a - 1\\) and \\(b^2 = 3b - 1\\), we have:\n\\[\na^3 = a \\cdot (3a - 1) = 3a^2 - a = 3(3a - 1) - a = 9a - 3 - a = 8a - 3,\n\\]\n\\[\nb^3 = b \\cdot (3b - 1) = 3b^2 - b = 3(3b - 1) - b = 9b - 3 - b = 8b - 3.\n\\]\n\nThus:\n\\[\na^3 + b^3 = (8a - 3) + (8b - 3) = 8(a + b) - 6 = 8 \\cdot 3 - 6 = 24 - 6 = 18.\n\\]\n\nTherefore:\n\\[\na \\sqrt{a} + b \\sqrt{b} = \\sqrt{18 + 2} = \\sqrt{20} = 2\\sqrt{5}.\n\\]\n\nThus, the final answer is:\n\\[\n\\boxed{2\\sqrt{5}}.\n\\]"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{"sid": "test:943", "position": 0, "gold": "14", "single_correct": true, "parallel_answer": "14", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2688", "position": 1, "gold": "-1", "single_correct": true, "parallel_answer": "-1", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3504", "position": 2, "gold": "216", "single_correct": false, "parallel_answer": "216", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4335", "position": 3, "gold": "5040", "single_correct": true, "parallel_answer": "5040", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2460", "position": 4, "gold": "154", "single_correct": false, "parallel_answer": "154", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:1324", "position": 5, "gold": "\\frac{3}{16}", "single_correct": false, "parallel_answer": "\\frac{1}{2}", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:2340", "position": 6, "gold": "6", "single_correct": true, "parallel_answer": "6", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:1577", "position": 7, "gold": "14", "single_correct": true, "parallel_answer": "14", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:639", "position": 8, "gold": "-9", "single_correct": true, "parallel_answer": "-9", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2892", "position": 9, "gold": "-71", "single_correct": false, "parallel_answer": "23", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:4702", "position": 10, "gold": "59", "single_correct": false, "parallel_answer": "-59", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1709", "position": 11, "gold": "75", "single_correct": false, "parallel_answer": "50", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:4041", "position": 12, "gold": "56", "single_correct": true, "parallel_answer": "56", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2119", "position": 13, "gold": "28", "single_correct": false, "parallel_answer": "14", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:2087", "position": 14, "gold": "7", "single_correct": true, "parallel_answer": "\\sqrt{58}", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:4549", "position": 15, "gold": "11", "single_correct": false, "parallel_answer": "6", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:2732", "position": 16, "gold": "\\frac{266664}{5}", "single_correct": false, "parallel_answer": "58332.8", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1433", "position": 17, "gold": "\\frac{1}{4}", "single_correct": true, "parallel_answer": "\\frac{1}{4}", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3285", "position": 18, "gold": "0", "single_correct": false, "parallel_answer": null, "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:29", "position": 19, "gold": "16", "single_correct": false, "parallel_answer": "16", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2948", "position": 20, "gold": "1+\\sqrt 2,\\ 1-\\sqrt 2,\\ 2+\\sqrt 3,\\ 2-\\sqrt 3", "single_correct": false, "parallel_answer": "0 \\text{ and } 4", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1997", "position": 21, "gold": "120", "single_correct": true, "parallel_answer": "120", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:414", "position": 22, "gold": "1", "single_correct": false, "parallel_answer": "-2, 1", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1808", "position": 23, "gold": "2", "single_correct": true, "parallel_answer": "2", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4962", "position": 24, "gold": "(4,\\pi)", "single_correct": true, "parallel_answer": "(4, \\pi)", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:274", "position": 25, "gold": "2", "single_correct": true, "parallel_answer": "2", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:916", "position": 26, "gold": "14", "single_correct": true, "parallel_answer": "14", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:534", "position": 27, "gold": "56", "single_correct": true, "parallel_answer": "56", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:2177", "position": 28, "gold": "18", "single_correct": false, "parallel_answer": null, "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1043", "position": 29, "gold": "2", "single_correct": true, "parallel_answer": "2", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:373", "position": 30, "gold": "11", "single_correct": true, "parallel_answer": "11", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:1379", "position": 31, "gold": "\\frac{10}{19}", "single_correct": false, "parallel_answer": "\\frac{16}{19}", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:196", "position": 32, "gold": "81", "single_correct": true, "parallel_answer": "46", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:2134", "position": 33, "gold": "15", "single_correct": false, "parallel_answer": "15", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:771", "position": 34, "gold": "\\frac{160}{33}", "single_correct": true, "parallel_answer": "\\frac{160}{33}", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3572", "position": 35, "gold": "22", "single_correct": true, "parallel_answer": "9", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:2358", "position": 36, "gold": "2 \\sqrt{5}", "single_correct": false, "parallel_answer": null, "parallel_correct": false, "initial_correct": false, "revision_correct": true}
+{"sid": "test:2019", "position": 37, "gold": "5", "single_correct": true, "parallel_answer": "5", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4144", "position": 38, "gold": "5", "single_correct": true, "parallel_answer": "5", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3314", "position": 39, "gold": "15", "single_correct": false, "parallel_answer": null, "parallel_correct": false, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3239", "position": 40, "gold": "4", "single_correct": true, "parallel_answer": "4", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4678", "position": 41, "gold": "6", "single_correct": true, "parallel_answer": "6", "parallel_correct": true, "initial_correct": false, "revision_correct": true}
+{"sid": "test:1122", "position": 42, "gold": "5", "single_correct": true, "parallel_answer": "5", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4168", "position": 43, "gold": "0.6", "single_correct": true, "parallel_answer": "0.6", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:1300", "position": 44, "gold": "1", "single_correct": true, "parallel_answer": "1", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:4516", "position": 45, "gold": "\\frac{25 \\sqrt{10}}{4}", "single_correct": false, "parallel_answer": null, "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:1903", "position": 46, "gold": "80", "single_correct": false, "parallel_answer": "80", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:1916", "position": 47, "gold": "144", "single_correct": false, "parallel_answer": "120", "parallel_correct": false, "initial_correct": false, "revision_correct": false}
+{"sid": "test:3409", "position": 48, "gold": "3", "single_correct": true, "parallel_answer": "3", "parallel_correct": true, "initial_correct": true, "revision_correct": true}
+{"sid": "test:3617", "position": 49, "gold": "9", "single_correct": true, "parallel_answer": "9", "parallel_correct": true, "initial_correct": true, "revision_correct": true}

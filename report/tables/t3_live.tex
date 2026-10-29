@@ -1,0 +1,6 @@
+\begin{tabular}{lcccccc}\toprule Strategy & Accuracy & Input tokens & Output tokens & Seconds & Truncated (\%) & No answer (\%) \\ \midrule
+Single (3,072) & 58.0 & 108 & 601 & 28.0 & 0.0 & 0.0 \\
+Parallel 3 x 1,024 & 62.0 & 325 & 1878 & 87.4 & 14.0 & 13.3 \\
+Sequential 1,024 + 2,048 & 66.0 & 870 & 1159 & 54.7 & 5.0 & 5.0 \\
+\bottomrule\end{tabular}
+% transitions vs initial answer: wrong->correct 2, correct->wrong 0, initial accuracy 62.0
