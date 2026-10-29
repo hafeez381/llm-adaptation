@@ -22,7 +22,7 @@ def fig_curves():
     tr = read_jsonl(RES / "train/train_log.jsonl")
     dev = read_jsonl(RES / "train/dev_metrics.jsonl")
     u = [r["update"] for r in dev]
-    fig, axes = plt.subplots(1, 3, figsize=(WIDTH, 2.0))
+    fig, axes = plt.subplots(1, 3, figsize=(WIDTH, 2.6))
     loss = np.convolve([r["loss"] for r in tr], np.ones(25) / 25, mode="valid")
     axes[0].plot(np.arange(len(loss)) + 25, loss, color=SERIES[0], lw=1, label="Training loss")
     axes[0].plot(u, [r["caption_loss"] for r in dev], "o-", color=SERIES[1], label="Dev caption loss")
@@ -32,14 +32,14 @@ def fig_curves():
         axes[1].plot(u, [r[key]["nll_correct"] for r in dev], ls, color=SERIES[0], marker="o", label=f"{suite}, correct")
         axes[1].plot(u, [r[key]["nll_no_image"] for r in dev], ls, color=SERIES[3], marker="o", label=f"{suite}, no image")
         axes[2].plot(u, [r[key]["delta_nll"] for r in dev], ls, color=SERIES[2 if i == 0 else 6], marker="o", label=suite)
-    axes[1].set_ylabel("Reference-answer NLL")
+    axes[1].set_ylabel("Answer NLL")
     axes[2].set_ylabel(r"Image-swap penalty $\Delta_{\mathrm{NLL}}$")
     axes[2].axhline(0, color="#6b6a63", lw=0.6)
     for ax, letter in zip(axes, "abc"):
         for b in BOUNDS:
             ax.axvline(b, color="#6b6a63", lw=0.6, ls=":")
         ax.set_xlabel("Update")
-        ax.legend(fontsize=5.5)
+        ax.legend(fontsize=5.5, loc="upper center", bbox_to_anchor=(0.5, -0.36))
         tag(ax, letter)
     fig.tight_layout()
     save(fig, FIG / "t2_curves.pdf")
