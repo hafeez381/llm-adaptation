@@ -1,0 +1,117 @@
+{
+  "grounding|correct": {
+    "n": 128,
+    "accuracy": 0.65625,
+    "by_type": {
+      "counting": 0.40625,
+      "presence": 0.90625
+    },
+    "pair_accuracy": 0.515625,
+    "identical_answer_rate": 0.234375,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 0.8001583502682479,
+    "seconds_per_answer": 0.03760564513504505
+  },
+  "grounding|complementary": {
+    "n": 128,
+    "accuracy": 0.1875,
+    "by_type": {
+      "counting": 0.28125,
+      "presence": 0.09375
+    },
+    "pair_accuracy": 0.03125,
+    "identical_answer_rate": 0.234375,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 2.837511863501277,
+    "seconds_per_answer": 0.03360174410045147,
+    "follows_partner": 0.65625,
+    "matches_own": 0.1875,
+    "neither": 0.15625
+  },
+  "grounding|mismatched": {
+    "n": 128,
+    "accuracy": 0.4296875,
+    "by_type": {
+      "counting": 0.328125,
+      "presence": 0.53125
+    },
+    "pair_accuracy": 0.109375,
+    "identical_answer_rate": 0.625,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 1.835075353475986,
+    "seconds_per_answer": 0.03431020304560661
+  },
+  "grounding|no_image": {
+    "n": 128,
+    "accuracy": 0.375,
+    "by_type": {
+      "counting": 0.25,
+      "presence": 0.5
+    },
+    "pair_accuracy": 0.0,
+    "identical_answer_rate": 1.0,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 1.656269709012122,
+    "seconds_per_answer": 0.017551055178046227
+  },
+  "vqa|correct": {
+    "n": 192,
+    "accuracy": 0.48333333333333334,
+    "by_type": {
+      "number": 0.49583333333333335,
+      "other": 0.3361111111111111,
+      "yes/no": 0.6222222222222222
+    },
+    "pair_accuracy": 0.13541666666666666,
+    "identical_answer_rate": 0.625,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 1.3865353679551238,
+    "seconds_per_answer": 0.036778644969065986
+  },
+  "vqa|complementary": {
+    "n": 192,
+    "accuracy": 0.32135416666666666,
+    "by_type": {
+      "number": 0.18541666666666667,
+      "other": 0.19305555555555554,
+      "yes/no": 0.5402777777777777
+    },
+    "pair_accuracy": 0.03125,
+    "identical_answer_rate": 0.625,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 2.1047384219709784,
+    "seconds_per_answer": 0.036567618449529014,
+    "follows_partner": 0.4427083333333333,
+    "matches_own": 0.2760416666666667,
+    "neither": 0.28125
+  },
+  "vqa|mismatched": {
+    "n": 192,
+    "accuracy": 0.2786458333333333,
+    "by_type": {
+      "number": 0.11041666666666666,
+      "other": 0.12222222222222223,
+      "yes/no": 0.5472222222222222
+    },
+    "pair_accuracy": 0.03125,
+    "identical_answer_rate": 0.53125,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 2.211414854095589,
+    "seconds_per_answer": 0.036342233419418335
+  },
+  "vqa|no_image": {
+    "n": 192,
+    "accuracy": 0.36302083333333335,
+    "by_type": {
+      "number": 0.31666666666666665,
+      "other": 0.16944444444444443,
+      "yes/no": 0.5874999999999999
+    },
+    "pair_accuracy": 0.0,
+    "identical_answer_rate": 1.0,
+    "empty_rate": 0.0,
+    "mean_reference_nll": 2.2182158867362887,
+    "seconds_per_answer": 0.018492236733436584
+  },
+  "peak_memory_bytes": 1626611712
+}

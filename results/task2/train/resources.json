@@ -1,0 +1,25 @@
+{
+  "timers": {
+    "train_seconds": 5875.449928283691,
+    "snapshot_seconds": 6.846735954284668,
+    "dev_eval_seconds": 112.57521843910217
+  },
+  "stages": {
+    "0": {
+      "seconds": 2755.843790769577,
+      "peak_memory_bytes": 1656018944,
+      "trainable_params": 1837056
+    },
+    "1": {
+      "seconds": 2089.361868619919,
+      "peak_memory_bytes": 1674345984,
+      "trainable_params": 6424576
+    },
+    "2": {
+      "seconds": 1030.2442688941956,
+      "peak_memory_bytes": 1674345984,
+      "trainable_params": 6424576
+    }
+  },
+  "device": "Tesla T4"
+}

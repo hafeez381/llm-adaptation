@@ -1,0 +1,128 @@
+{
+  "grounding|correct_on_both": {
+    "pair_id": "counting:13:66263-348379",
+    "question": "How many stop signs can you see?",
+    "count": 33,
+    "images": [
+      66263,
+      348379
+    ],
+    "references": [
+      "1",
+      "3"
+    ],
+    "pred_correct": [
+      "1",
+      "3"
+    ],
+    "pred_swap": [
+      "3",
+      "1"
+    ]
+  },
+  "grounding|same_answer_both_images": {
+    "pair_id": "counting:13:141501-390685",
+    "question": "How many stop signs can you see?",
+    "count": 15,
+    "images": [
+      141501,
+      390685
+    ],
+    "references": [
+      "1",
+      "2"
+    ],
+    "pred_correct": [
+      "1",
+      "1"
+    ],
+    "pred_swap": [
+      "1",
+      "1"
+    ]
+  },
+  "grounding|swap_follows_partner": {
+    "pair_id": "counting:13:66263-348379",
+    "question": "How many stop signs can you see?",
+    "count": 33,
+    "images": [
+      66263,
+      348379
+    ],
+    "references": [
+      "1",
+      "3"
+    ],
+    "pred_correct": [
+      "1",
+      "3"
+    ],
+    "pred_swap": [
+      "3",
+      "1"
+    ]
+  },
+  "vqa|correct_on_both": {
+    "pair_id": "vqa:111819003-251816004",
+    "question": "What kind of animal is saying hello?",
+    "count": 13,
+    "images": [
+      111819,
+      251816
+    ],
+    "references": [
+      "elephant",
+      "zebra"
+    ],
+    "pred_correct": [
+      "elephant",
+      "zebra"
+    ],
+    "pred_swap": [
+      "zebra",
+      "elephant"
+    ]
+  },
+  "vqa|same_answer_both_images": {
+    "pair_id": "vqa:112065017-353347005",
+    "question": "What color is the couch?",
+    "count": 60,
+    "images": [
+      112065,
+      353347
+    ],
+    "references": [
+      "red",
+      "black"
+    ],
+    "pred_correct": [
+      "white",
+      "white"
+    ],
+    "pred_swap": [
+      "white",
+      "white"
+    ]
+  },
+  "vqa|swap_follows_partner": {
+    "pair_id": "vqa:111819003-251816004",
+    "question": "What kind of animal is saying hello?",
+    "count": 13,
+    "images": [
+      111819,
+      251816
+    ],
+    "references": [
+      "elephant",
+      "zebra"
+    ],
+    "pred_correct": [
+      "elephant",
+      "zebra"
+    ],
+    "pred_swap": [
+      "zebra",
+      "elephant"
+    ]
+  }
+}
