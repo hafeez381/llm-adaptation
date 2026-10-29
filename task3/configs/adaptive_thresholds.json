@@ -1,0 +1,70 @@
+{
+  "math": {
+    "dev_sc32_acc": 0.825,
+    "rule": "lowest mean token cost with dev acc >= fixed-32 SC - 1pp; ties: higher acc, smaller tau, smaller gamma",
+    "selected": {
+      "agreement": {
+        "family": "agreement",
+        "tau": 0.625,
+        "gamma": null,
+        "acc": 0.826,
+        "cost": 7088.9555,
+        "rollouts": 9.15,
+        "stop_counts": {
+          "4": 1527,
+          "16": 25,
+          "8": 106,
+          "32": 342
+        }
+      },
+      "quality": {
+        "family": "quality",
+        "tau": 0.5,
+        "gamma": 0.0,
+        "acc": 0.8215,
+        "cost": 5479.528499999999,
+        "rollouts": 7.152,
+        "stop_counts": {
+          "8": 88,
+          "4": 1688,
+          "32": 204,
+          "16": 20
+        }
+      }
+    }
+  },
+  "mathvista": {
+    "dev_sc32_acc": 0.6375,
+    "rule": "lowest mean token cost with dev acc >= fixed-32 SC - 1pp; ties: higher acc, smaller tau, smaller gamma",
+    "selected": {
+      "agreement": {
+        "family": "agreement",
+        "tau": 0.5,
+        "gamma": null,
+        "acc": 0.635,
+        "cost": 3560.0325,
+        "rollouts": 8.878,
+        "stop_counts": {
+          "32": 311,
+          "4": 1511,
+          "16": 42,
+          "8": 136
+        }
+      },
+      "quality": {
+        "family": "quality",
+        "tau": 0.5,
+        "gamma": 0.0,
+        "acc": 0.6385,
+        "cost": 4019.551,
+        "rollouts": 10.328,
+        "stop_counts": {
+          "32": 399,
+          "4": 1346,
+          "8": 197,
+          "16": 58
+        }
+      }
+    }
+  }
+}
