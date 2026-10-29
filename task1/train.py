@@ -113,7 +113,8 @@ def file_bytes(p) -> int:
 
 
 class Trainer:
-    def __init__(self, cfg: dict, data: dict, store_spec: str, run_dir, device=None, amp: bool = True):
+    def __init__(self, cfg: dict, data: dict, store_spec: str, run_dir, device=None, amp: bool = True,
+                 snapshot_store: str | None = None):
         self.cfg, self.data = cfg, data
         self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
         self.amp = amp
@@ -123,6 +124,8 @@ class Trainer:
         self.run_dir.mkdir(parents=True, exist_ok=True)
         self.log_path = self.run_dir / "train_log.jsonl"
         self.store = make_store(store_spec)
+        # resume snapshots may live elsewhere (a VM-local folder) when the Hub quota cannot hold 7 GB Full FT states
+        self.snap = make_store(snapshot_store) if snapshot_store else self.store
 
         seed_everything(cfg["seed"])
         self.model = build_model(cfg, self.device)
@@ -200,12 +203,12 @@ class Trainer:
         torch.save({"update": u, "examples_seen": u * self.E, "model": trainable_state(self.model, self.full),
                     "optimizer": self.opt.state_dict(), "scheduler": self.sched.state_dict(),
                     "scaler": self.scaler.state_dict(), "rng": rng_state(), "timers": self.timers}, local)
-        self.store.put(local, f"{self.run}/resume/{name}")
-        self.store.put(self.log_path, f"{self.run}/resume/train_log.jsonl")
-        prev = self.store.read_text(f"{self.run}/resume/LATEST")
-        self.store.write_text(f"{self.run}/resume/LATEST", name)
+        self.snap.put(local, f"{self.run}/resume/{name}")
+        self.snap.put(self.log_path, f"{self.run}/resume/train_log.jsonl")
+        prev = self.snap.read_text(f"{self.run}/resume/LATEST")
+        self.snap.write_text(f"{self.run}/resume/LATEST", name)
         if prev and prev.strip() != name:  # only after the new snapshot's sha is verified
-            self.store.delete(f"{self.run}/resume/{prev.strip()}")
+            self.snap.delete(f"{self.run}/resume/{prev.strip()}")
             (self.run_dir / prev.strip()).unlink(missing_ok=True)
         sizes = {"resume_bytes": file_bytes(local)}
         if keep_weights:
@@ -223,11 +226,11 @@ class Trainer:
         self.sizes = getattr(self, "sizes", {}) | sizes
 
     def resume(self) -> None:
-        name = (self.store.read_text(f"{self.run}/resume/LATEST") or "").strip()
+        name = (self.snap.read_text(f"{self.run}/resume/LATEST") or "").strip()
         if not name:
             raise FileNotFoundError(f"no snapshot for {self.run}")
-        local = self.store.get(f"{self.run}/resume/{name}", self.run_dir / name)
-        self.store.get(f"{self.run}/resume/train_log.jsonl", self.log_path)
+        local = self.snap.get(f"{self.run}/resume/{name}", self.run_dir / name)
+        self.snap.get(f"{self.run}/resume/train_log.jsonl", self.log_path)
         s = torch.load(local, map_location=self.device, weights_only=False)
         if self.full:
             self.model.load_state_dict(s["model"])
@@ -292,13 +295,14 @@ def main():
     ap.add_argument("--method", required=True, choices=list(read_json(CFG_PATH)["methods"]))
     ap.add_argument("--mode", choices=["smoke", "full"], required=True)
     ap.add_argument("--store", required=True, help="hub:<user>/<repo> or a local folder")
+    ap.add_argument("--snapshot-store", help="separate store for resume snapshots (default: --store)")
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--stop-after", type=int, help="dry run: stop after this many updates, no final save")
     args = ap.parse_args()
 
     cfg = load_cfg(args.method, args.mode)
     run_dir = ROOT / "results/task1" / (args.method + ("_smoke" if args.mode == "smoke" else ""))
-    tr = Trainer(cfg, load_data(cfg), args.store, run_dir)
+    tr = Trainer(cfg, load_data(cfg), args.store, run_dir, snapshot_store=args.snapshot_store)
     if args.resume:
         tr.resume()
     write_json(run_dir / "config.json", cfg)
