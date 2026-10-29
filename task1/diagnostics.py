@@ -68,6 +68,22 @@ def delta_adapter(store, run: str) -> dict[int, np.ndarray]:
             for l in LAYERS}
 
 
+def displacement(store, run_tag: tuple[str, str], base_sd: dict) -> float:
+    """||theta - theta0||_2 over the unique parameters (the tied embedding counted once), read tensor by tensor."""
+    from safetensors import safe_open
+    run, tag = run_tag
+    path = ROOT / f"outputs/diag/{run}_{tag}.safetensors"
+    if not path.exists():
+        store.get(f"task1/{run}/{tag}/model.safetensors", path)
+    total = 0.0
+    with safe_open(path, "pt") as f:
+        keys = set(f.keys())
+        assert keys <= set(base_sd), keys - set(base_sd)
+        for k in keys:
+            total += float((f.get_tensor(k).double() - base_sd[k].double()).pow(2).sum())
+    return total ** 0.5
+
+
 def metrics(dW, W0, Uk, Vk, z) -> dict:
     nrm2 = float((dW ** 2).sum())
     proj = Uk @ (Uk.T @ dW)
@@ -91,6 +107,12 @@ def main():
             assert not np.isnan(z[k][l]).any() and len({row.tobytes() for row in z[k][l]}) == len(z[k][l]), "D8 gate"
     z_hash = hashlib.sha256(b"".join(z[k][l].tobytes() for k in sorted(z) for l in LAYERS)).hexdigest()
     W0 = {l: base.get_submodule(NAME.format(l)).weight.detach().numpy().copy() for l in LAYERS}
+    (ROOT / "outputs/diag").mkdir(parents=True, exist_ok=True)
+    base_sd = {k: v.detach() for k, v in base.state_dict().items()}
+    disp = {m: displacement(store, rt, base_sd) for m, rt in
+            [("full_ft@625", ("full_ft", "step-0625")), ("full_ft", ("full_ft", "final")), ("l2sp", ("l2sp", "final"))]}
+    write_json(ROOT / "results/task1/displacement.json", disp | {"l2sp_over_full_ft": disp["l2sp"] / disp["full_ft"]})
+    del base_sd
     W0_fp16_err = {l: float(np.abs(W0[l].astype(np.float16).astype(np.float32) - W0[l]).max()) for l in LAYERS}
     bases = {}
     for l in LAYERS:
