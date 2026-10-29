@@ -56,7 +56,11 @@ class HubStore:
         self.api.upload_file(path_or_fileobj=str(local), path_in_repo=dest, repo_id=self.repo_id)
         info = self.api.get_paths_info(self.repo_id, [dest], expand=True)[0]
         lfs = info.lfs
-        hub_sha = (lfs["sha256"] if isinstance(lfs, dict) else lfs.sha256) if lfs else None
+        if lfs:
+            hub_sha = lfs["sha256"] if isinstance(lfs, dict) else lfs.sha256
+        else:  # small files are plain git blobs with no LFS sha, so read them back
+            from huggingface_hub import hf_hub_download
+            hub_sha = sha256_file(hf_hub_download(self.repo_id, dest, force_download=True))
         if hub_sha != sha:
             raise RuntimeError(f"Hub sha {hub_sha} != local sha {sha} for {dest}")
         return sha
