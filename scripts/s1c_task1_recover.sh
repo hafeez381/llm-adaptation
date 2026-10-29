@@ -20,7 +20,7 @@ cp $OLD/results/task1/full_ft/train_log.jsonl results/task1/full_ft/ && cp -r $O
 stage free_hub python -c "
 from common.hub_sync import HubStore
 s = HubStore('hafeez381/llm-adaptation')
-for f in ('task1/full_ft/resume/resume-1250.pt', 'task1/full_ft/resume/LATEST'):
+for f in [f for f in s.api.list_repo_files(s.repo_id) if f.startswith('task1/full_ft/resume/')]:
     s.delete(f)
 print(sorted(s.api.list_repo_files(s.repo_id)))"
 stage finalize_full_ft python -m task1.finalize_run --method full_ft --snapshot $OLD/results/task1/full_ft/resume-1250.pt \
