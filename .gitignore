@@ -10,3 +10,4 @@ fake_hub/
 *.safetensors
 *.bin
 results/**/*_smoke/
+outputs/
