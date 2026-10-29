@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Recovery chain after the Hub private-storage quota stopped Full FT's final upload (update 1,250 was trained and its
-# resume snapshot is on the VM). Frees the Hub copy of that snapshot, writes Full FT's final weights from it, then
-# trains L2-SP and the adapters with VM-local resume snapshots, then evaluates all seven conditions.
+# resume snapshot is on the VM). The Hub stays over quota even after freeing space, so every Task 1 artifact now goes
+# to a VM-local store: Full FT's final weights from the snapshot, L2-SP and the adapters, the seven evaluations and
+# the CPU diagnostics all run on this VM, and only small result files leave it.
 set -u
-STORE=hub:hafeez381/llm-adaptation
+STORE=/content/store
 SNAP=/content/snapshots
 OLD=/content/repo
 stage() {  # stage NAME CMD...
@@ -17,12 +18,7 @@ stage() {  # stage NAME CMD...
 mkdir -p results/task1/full_ft data outputs/logs && ln -sfn $OLD/data/cache data/cache
 rm -f $OLD/results/task1/full_ft/resume-0937.pt   # superseded by resume-1250
 cp $OLD/results/task1/full_ft/train_log.jsonl results/task1/full_ft/ && cp -r $OLD/results/task1/full_ft/step-0625 results/task1/full_ft/
-stage free_hub python -c "
-from common.hub_sync import HubStore
-s = HubStore('hafeez381/llm-adaptation')
-for f in [f for f in s.api.list_repo_files(s.repo_id) if f.startswith('task1/full_ft/resume/')]:
-    s.delete(f)
-print(sorted(s.api.list_repo_files(s.repo_id)))"
+mkdir -p $STORE/task1/full_ft && cp -r $OLD/results/task1/full_ft/step-0625 $STORE/task1/full_ft/
 stage finalize_full_ft python -m task1.finalize_run --method full_ft --snapshot $OLD/results/task1/full_ft/resume-1250.pt \
   --store $STORE --peak-from $OLD/outputs/dryrun/resources.json
 rm -f $OLD/results/task1/full_ft/resume-1250.pt  # final weights are on the Hub, sha-verified
@@ -36,3 +32,4 @@ for c in baseline full_ft@625 full_ft l2sp lora4 lora16 oplora16; do
   stage "eval_$c" python -m task1.evaluate --condition "$c" --store $STORE --mode full
   rm -rf outputs/models/src
 done
+stage diagnostics python -m task1.diagnostics --store $STORE
