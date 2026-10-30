@@ -142,9 +142,15 @@ class Trainer:
         self.theta0 = None
         if cfg.get("lam", 0) > 0:
             t = time.time()
-            self.theta0 = [p.detach().clone() for p in self.params]  # FP32 copy on the training device
+            # FP32 copy of theta0. GPUs under 20 GB (a T4) cannot also hold it next to Full FT's weights, gradients
+            # and AdamW state, so it stays in pinned CPU memory and is streamed in each update (timed below).
+            small = self.device.type == "cuda" and torch.cuda.get_device_properties(0).total_memory < 20e9
+            self.theta0_on_cpu = small
+            self.theta0 = [p.detach().to("cpu").pin_memory() if small else p.detach().clone() for p in self.params]
             self.overhead |= {"theta0_bytes": sum(p.numel() * p.element_size() for p in self.theta0),
-                              "theta0_copy_seconds": time.time() - t}
+                              "theta0_copy_seconds": time.time() - t,
+                              "theta0_device": "cpu (pinned)" if small else str(self.device),
+                              "theta0_transfer_seconds": 0.0}
         if hasattr(self.model, "adapter_overhead"):
             self.overhead |= self.model.adapter_overhead
         self.E = cfg["microbatch"] * cfg["grad_accum"]
@@ -176,9 +182,17 @@ class Trainer:
         row = {"update": u, "sft_loss": sft, "lr": self.sched.get_last_lr()[0], "tokens": n_valid}
         if self.theta0 is not None:
             with torch.no_grad():
-                diff = torch._foreach_sub(self.params, self.theta0)
-                omega = 0.5 * sum(float(d.double().pow(2).sum()) for d in diff)
-                torch._foreach_add_([p.grad for p in self.params], diff, alpha=cfg["lam"])
+                if self.theta0_on_cpu:
+                    omega, tt = 0.0, time.time()
+                    for p, p0 in zip(self.params, self.theta0):
+                        d = p - p0.to(self.device, non_blocking=True)
+                        omega += 0.5 * float(d.double().pow(2).sum())
+                        p.grad.add_(d, alpha=cfg["lam"])
+                    self.overhead["theta0_transfer_seconds"] += time.time() - tt
+                else:
+                    diff = torch._foreach_sub(self.params, self.theta0)
+                    omega = 0.5 * sum(float(d.double().pow(2).sum()) for d in diff)
+                    torch._foreach_add_([p.grad for p in self.params], diff, alpha=cfg["lam"])
             row |= {"omega": omega, "lam_omega": cfg["lam"] * omega, "total_loss": sft + cfg["lam"] * omega}
         gnorm = torch.nn.utils.clip_grad_norm_(self.params, cfg["clip_grad_norm"])
         scale = self.scaler.get_scale()
@@ -205,6 +219,8 @@ class Trainer:
                     "scaler": self.scaler.state_dict(), "rng": rng_state(), "timers": self.timers}, local)
         self.snap.put(local, f"{self.run}/resume/{name}")
         self.snap.put(self.log_path, f"{self.run}/resume/train_log.jsonl")
+        # a second copy of the log in the main store, so losing the snapshot store never loses the curve
+        self.store.put(self.log_path, f"{self.run}/results/train_log.jsonl")
         prev = self.snap.read_text(f"{self.run}/resume/LATEST")
         self.snap.write_text(f"{self.run}/resume/LATEST", name)
         if prev and prev.strip() != name:  # only after the new snapshot's sha is verified
