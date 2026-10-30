@@ -86,6 +86,7 @@ def resolve(condition: str, store, work: Path, device) -> Path:
         u = AutoModelForCausalLM.from_pretrained(MODEL, revision=revision(), dtype=torch.float32).to(device)
         u.requires_grad_(False)
         attach_adapters(u, cfg)
+        u.to(device)  # the adapter factors are created on the CPU
         from task1.adapters import lora_modules
         with torch.no_grad():
             for n, mod in lora_modules(u):

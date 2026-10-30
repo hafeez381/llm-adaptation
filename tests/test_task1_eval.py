@@ -37,3 +37,30 @@ def test_merge_adds_scaled_effective_product():
     A, B = torch.randn(2, 6), torch.randn(4, 2)
     merge_adapters(model, {"proj": {"A_eff": A, "B_eff": B, "scale": 2.0}})
     assert torch.allclose(lin.weight, w0 + 2.0 * B @ A, atol=1e-6)
+
+
+def test_fp32_merge_matches_unmerged_adapters():
+    """S4 merge half: merging the exported factors in FP32 reproduces the unmerged adapter model's logits."""
+    from task1.adapters import attach_adapters, lora_modules
+    from task1.train import build_model
+    from tests.test_task1_train import VOCAB, tiny_cfg
+    cfg = tiny_cfg("lora16")
+    trained = build_model(cfg, "cpu").float().eval()
+    g = torch.Generator().manual_seed(0)
+    with torch.no_grad():
+        for _, mod in lora_modules(trained):
+            mod.lora_B.copy_(torch.randn(mod.lora_B.shape, generator=g) * 0.05)
+    exported = trained.export_adapters()
+    merged = build_model(cfg | {"kind": "full"}, "cpu").eval()
+    merge_adapters(merged, exported)
+    u = build_model(cfg | {"kind": "full"}, "cpu")
+    u.requires_grad_(False)
+    attach_adapters(u, cfg | {"project": False})
+    with torch.no_grad():
+        for n, mod in lora_modules(u):
+            mod.lora_A.copy_(exported[n]["A_eff"])
+            mod.lora_B.copy_(exported[n]["B_eff"])
+    u.eval()
+    ids = torch.randint(1, VOCAB, (2, 12))
+    with torch.no_grad():
+        assert (merged(input_ids=ids).logits - u(input_ids=ids).logits).abs().max() < 1e-4
