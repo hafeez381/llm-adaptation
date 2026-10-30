@@ -64,3 +64,10 @@ def test_fp32_merge_matches_unmerged_adapters():
     ids = torch.randint(1, VOCAB, (2, 12))
     with torch.no_grad():
         assert (merged(input_ids=ids).logits - u(input_ids=ids).logits).abs().max() < 1e-4
+
+
+def test_boolq_bias_counts_predictions_and_class_accuracy():
+    from task1.boolq_bias import bias
+    rows = [{"target": 1, "acc": 1.0}, {"target": 1, "acc": 0.0}, {"target": 0, "acc": 1.0}, {"target": 0, "acc": 1.0}]
+    b = bias(rows)  # predictions: yes, no, no, no
+    assert b == {"pred_yes": 0.25, "gold_yes": 0.5, "acc_gold_yes": 0.5, "acc_gold_no": 1.0}
