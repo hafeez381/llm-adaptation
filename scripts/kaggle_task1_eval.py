@@ -1,6 +1,6 @@
 """Kaggle GPU kernel for Task 1 evaluation (C7, C9) and, optionally, diagnostics (C8). The push script prepends
-`CONDITIONS = [...]` and `DIAGNOSTICS = True/False`. The five training kernels are attached as inputs; their
-store folders are linked into one local store so merge/evaluate/diagnostics read them unchanged.
+`CONDITIONS = [...]` and `DIAGNOSTICS = True/False`. Weights are read from the private Hub repo the training
+kernels wrote (token from the private dataset abdul381/pa3-hf-token), and results are pushed back to it.
 """
 import os
 import shutil
@@ -12,7 +12,7 @@ CONDITIONS = globals().get("CONDITIONS", [])
 DIAGNOSTICS = globals().get("DIAGNOSTICS", False)
 REPO = Path("/tmp/repo")
 LOG = Path("/kaggle/working/logs")
-STORE = Path("/tmp/store")
+STORE = "hub:hafeez381/llm-adaptation-t4"
 
 
 def sh(name, cmd):
@@ -36,12 +36,9 @@ else:
     shutil.copytree(src / "repo", REPO, dirs_exist_ok=True)
 shutil.copy(src / "GIT_SHA", REPO / "GIT_SHA")
 
-# one store view over the training kernels' outputs: <input>/store/task1/<method>/... -> /tmp/store/task1/<method>
-for run in Path("/kaggle/input").rglob("store/task1/*"):
-    if run.is_dir() and not (STORE / "task1" / run.name).exists():
-        (STORE / "task1").mkdir(parents=True, exist_ok=True)
-        os.symlink(run, STORE / "task1" / run.name)
-print("store runs:", sorted(p.name for p in (STORE / "task1").iterdir()), flush=True)
+tok = next(Path("/kaggle/input").rglob("hf_token"))
+Path("/root/.cache/huggingface").mkdir(parents=True, exist_ok=True)
+shutil.copy(tok, "/root/.cache/huggingface/token")
 
 sh("setup", "pip uninstall -q -y torchao; grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
             "pip install -q -r /tmp/req.txt && nvidia-smi && cat GIT_SHA && "

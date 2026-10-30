@@ -1,7 +1,9 @@
 """Kaggle GPU kernel for one Task 1 training run (C3-C6) on a T4. The push script prepends `METHOD = "<name>"`.
 
-The repo and the multi-GB resume snapshots live in /tmp (not saved). Only the store, i.e. final/midpoint weights
-and the run's result files, goes to /kaggle/working, which Kaggle keeps as the kernel output.
+Two copies of everything, one off the machine (global rule): resume snapshots, the training log, weights and
+results go to the private Hub repo (sha256-verified on every upload), and the weights and results are also kept
+in /kaggle/working, which Kaggle saves as the kernel output. The token comes from the private dataset
+abdul381/pa3-hf-token.
 """
 import os
 import shutil
@@ -12,8 +14,8 @@ from pathlib import Path
 METHOD = globals().get("METHOD")  # set by scripts/kaggle_task1.sh
 REPO = Path("/tmp/repo")
 LOG = Path("/kaggle/working/logs")
-STORE = "/kaggle/working/store"
-SNAP = "/tmp/snapshots"
+STORE = "hub:hafeez381/llm-adaptation-t4"
+SNAP = STORE
 
 
 def sh(name, cmd):
@@ -37,6 +39,9 @@ if (src / "repo.tar.gz").exists():
 else:  # Kaggle unpacks uploaded archives into a folder
     shutil.copytree(src / "repo", REPO, dirs_exist_ok=True)
 shutil.copy(src / "GIT_SHA", REPO / "GIT_SHA")
+tok = next(Path("/kaggle/input").rglob("hf_token"))
+Path("/root/.cache/huggingface").mkdir(parents=True, exist_ok=True)
+shutil.copy(tok, "/root/.cache/huggingface/token")
 
 sh("setup", "pip uninstall -q -y torchao; grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
             "pip install -q -r /tmp/req.txt && pip install -q pytest && nvidia-smi && "
@@ -49,5 +54,5 @@ sh("data", "python -c 'import json; print(json.load(open(\"data/manifest.json\")
 sh("tests", "python -m pytest -q tests/test_task1_train.py tests/test_task1_adapters.py")
 sh(f"train_{METHOD}", f"python -m task1.train --method {METHOD} --mode full --store {STORE} --snapshot-store {SNAP}")
 shutil.copytree(REPO / "results/task1" / METHOD, f"/kaggle/working/results/{METHOD}",
-                ignore=shutil.ignore_patterns("*.pt", "final", "step-*"), dirs_exist_ok=True)
+                ignore=shutil.ignore_patterns("resume-*.pt"), dirs_exist_ok=True)   # weights, logs, resources
 print("ALL_DONE", flush=True)

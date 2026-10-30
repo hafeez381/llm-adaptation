@@ -12,7 +12,7 @@ for m in "$@"; do
   cat > "$dir/kernel-metadata.json" <<EOF
 {"id": "abdul381/$slug", "title": "$slug", "code_file": "run.py", "language": "python", "kernel_type": "script",
  "is_private": "true", "enable_gpu": "true", "enable_tpu": "false", "enable_internet": "true", "machine_shape": "",
- "dataset_sources": ["abdul381/pa3-task1-code"], "competition_sources": [], "kernel_sources": [], "model_sources": []}
+ "dataset_sources": ["abdul381/pa3-task1-code", "abdul381/pa3-hf-token"], "competition_sources": [], "kernel_sources": [], "model_sources": []}
 EOF
   until out=$(kaggle kernels push -p "$dir" --accelerator NvidiaTeslaT4 2>&1 | grep -v outdated); echo "$(date +%T) $m: $out"; \
         echo "$out" | grep -q "successfully pushed"; do
