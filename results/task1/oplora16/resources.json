@@ -1,0 +1,20 @@
+{
+  "method": "oplora16",
+  "updates_done": 1250,
+  "trainable_params": 10092544,
+  "device": "Tesla T4",
+  "peak_memory_bytes": 5490601472,
+  "train_seconds": 12610.4388256073,
+  "snapshot_seconds": 44.055827379226685,
+  "overhead": {
+    "n_adapted_modules": 196,
+    "svd_seconds": 31.09987211227417,
+    "basis_bytes": 322961408,
+    "export_seconds": 0.05462980270385742
+  },
+  "checkpoint_sizes": {
+    "resume_bytes": 121593176,
+    "step-0625_bytes": 40488573,
+    "final_bytes": 40488573
+  }
+}
