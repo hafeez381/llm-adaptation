@@ -38,7 +38,7 @@ else:  # Kaggle unpacks uploaded archives into a folder
     shutil.copytree(src / "repo", REPO, dirs_exist_ok=True)
 shutil.copy(src / "GIT_SHA", REPO / "GIT_SHA")
 
-sh("setup", "grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
+sh("setup", "pip uninstall -q -y torchao; grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
             "pip install -q -r /tmp/req.txt && pip install -q pytest && nvidia-smi && "
             "python -c 'from task1.setup_inputs import env_info; from common.results import write_json; "
             "write_json(\"/kaggle/working/env.json\", env_info()); print(env_info())' && cat GIT_SHA")

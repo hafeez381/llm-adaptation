@@ -43,7 +43,7 @@ for run in Path("/kaggle/input").rglob("store/task1/*"):
         os.symlink(run, STORE / "task1" / run.name)
 print("store runs:", sorted(p.name for p in (STORE / "task1").iterdir()), flush=True)
 
-sh("setup", "grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
+sh("setup", "pip uninstall -q -y torchao; grep -v -E '^(torch|numpy|pandas|pyarrow|matplotlib|pytest)==' requirements.txt > /tmp/req.txt && "
             "pip install -q -r /tmp/req.txt && nvidia-smi && cat GIT_SHA && "
             "python -c 'from task1.setup_inputs import env_info; from common.results import write_json; "
             "write_json(\"/kaggle/working/env.json\", env_info())'")
