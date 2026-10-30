@@ -1,0 +1,42 @@
+{
+  "k": 128,
+  "reference": "float64 CPU SVD",
+  "layers": {
+    "0": {
+      "sigma_k_over_k1": 1.0007691417656635,
+      "A_overlap": 8.340379039924534e-05,
+      "B_overlap": 0.00012909390572710613,
+      "A_share_last4": 0.600051401516246,
+      "A_share_last16": 0.7412757539639344,
+      "B_share_last4": 0.7508739301316549,
+      "B_share_last16": 0.9005398820136085,
+      "right_leak": 8.497418504042759e-05,
+      "right_leak_after_reprojection": 2.994176224492059e-16,
+      "dW_rel_change_from_reprojection": 8.497418504042474e-05
+    },
+    "13": {
+      "sigma_k_over_k1": 1.002825757324906,
+      "A_overlap": 5.518209923880888e-05,
+      "B_overlap": 7.616856392564505e-05,
+      "A_share_last4": 0.1831125650054089,
+      "A_share_last16": 0.3169049012633927,
+      "B_share_last4": 0.5640549124377433,
+      "B_share_last16": 0.8226215758985154,
+      "right_leak": 5.532827792274504e-05,
+      "right_leak_after_reprojection": 2.943388963736113e-16,
+      "dW_rel_change_from_reprojection": 5.5328277922736836e-05
+    },
+    "27": {
+      "sigma_k_over_k1": 1.0009521066564009,
+      "A_overlap": 0.00012452828899851406,
+      "B_overlap": 0.00016878475934703214,
+      "A_share_last4": 0.6711607888422628,
+      "A_share_last16": 0.7268380854322166,
+      "B_share_last4": 0.8041849162900877,
+      "B_share_last16": 0.9218569594171252,
+      "right_leak": 0.00012645876370190204,
+      "right_leak_after_reprojection": 2.9835940008640644e-16,
+      "dW_rel_change_from_reprojection": 0.00012645876370190404
+    }
+  }
+}
