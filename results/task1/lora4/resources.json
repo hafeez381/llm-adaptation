@@ -1,0 +1,18 @@
+{
+  "method": "lora4",
+  "updates_done": 1250,
+  "trainable_params": 2523136,
+  "device": "Tesla T4",
+  "peak_memory_bytes": 5046529536,
+  "train_seconds": 9083.387903213501,
+  "snapshot_seconds": 95.32497811317444,
+  "overhead": {
+    "n_adapted_modules": 196,
+    "export_seconds": 0.0119781494140625
+  },
+  "checkpoint_sizes": {
+    "resume_bytes": 30760021,
+    "step-0625_bytes": 10210941,
+    "final_bytes": 10210941
+  }
+}

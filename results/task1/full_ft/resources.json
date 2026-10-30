@@ -1,0 +1,15 @@
+{
+  "method": "full_ft",
+  "updates_done": 1250,
+  "trainable_params": 596049920,
+  "device": "Tesla T4",
+  "peak_memory_bytes": 13905499648,
+  "train_seconds": 8570.48155093193,
+  "snapshot_seconds": 618.1935069561005,
+  "overhead": {},
+  "checkpoint_sizes": {
+    "resume_bytes": 7153016200,
+    "step-0625_bytes": 2384236599,
+    "final_bytes": 2384236599
+  }
+}
