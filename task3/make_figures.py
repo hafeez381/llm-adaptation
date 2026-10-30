@@ -157,7 +157,7 @@ def table_adaptive():
         rows.append(f"{DS[ds]} & Fixed 8 (SC) & {pct(n8['acc'])} & {n8['cost']:.0f} & 8.0 & -- & --" + r" \\ \midrule")
     head = (r"\begin{tabular}{llccccc}\toprule Dataset & Policy & Accuracy & Tokens & Rollouts & Stops at 4/8/16/32 (\%) & "
             r"Wrong early / recoverable \\ \midrule")
-    write(TAB / "t3_adaptive.tex", head + "\n" + "\n".join(rows).rstrip(r" \midrule") + "\n" + r"\bottomrule\end{tabular}")
+    write(TAB / "t3_adaptive.tex", head + "\n" + "\n".join(rows).removesuffix(r" \midrule") + "\n" + r"\bottomrule\end{tabular}")
 
 
 def table_live():

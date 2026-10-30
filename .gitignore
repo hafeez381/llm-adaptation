@@ -11,3 +11,11 @@ fake_hub/
 *.bin
 results/**/*_smoke/
 outputs/
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/*.out
+report/*.fdb_latexmk
+report/*.fls
+report/*.synctex.gz

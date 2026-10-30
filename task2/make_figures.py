@@ -67,6 +67,22 @@ def table_final():
     write(TAB / "t2_final.tex", head + "\n" + "\n".join(rows).removesuffix(r" \midrule") + "\n" + r"\bottomrule\end{tabular}")
 
 
+def table_main():
+    """Compact main-text table: accuracy, pair accuracy and reference NLL per suite and image condition."""
+    s = read_json(RES / "final/summary.json")
+    rows = []
+    for c in CONDITIONS:
+        cells = []
+        for suite in SUITES:
+            d = s[f"{suite}|{c}"]
+            cells.append(f"{100 * d['accuracy']:.1f} & {100 * d['pair_accuracy']:.1f} & {d['mean_reference_nll']:.2f}")
+        rows.append(f"{c.replace('_', ' ').capitalize()} & " + " & ".join(cells) + r" \\")
+    head = (r"\begin{tabular}{lcccccc}\toprule & \multicolumn{3}{c}{Annotation-derived (64 pairs)} & "
+            r"\multicolumn{3}{c}{Natural VQAv2 (96 pairs)} \\ \cmidrule(lr){2-4}\cmidrule(lr){5-7} Image & Accuracy & "
+            r"Pair acc. & Ref. NLL & Accuracy & Pair acc. & Ref. NLL \\ \midrule")
+    write(TAB / "t2_main.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
+
+
 def table_resources():
     r = read_json(RES / "train/resources.json")
     fc = read_json(RES / "feature_cache.json")
@@ -110,7 +126,7 @@ def write(path, text):
 
 
 def main():
-    for f in (fig_curves, table_final, table_resources, select_examples):
+    for f in (fig_curves, table_final, table_main, table_resources, select_examples):
         f()
     print(sorted(p.name for p in FIG.glob("t2_*")), sorted(p.name for p in TAB.glob("t2_*")))
 
