@@ -47,38 +47,39 @@ def fig_loss():
 
 
 def table_bench():
+    """Main table: primary scores with changes from the baseline. Appendix table: primary and raw accuracy."""
     agg = {c: read_json(ROOT / f"results/task1/eval/{c}/aggregates.json") for c in CONDITIONS}
     base = agg["baseline"]
-    rows = []
+    main, full = [], []
     for c in CONDITIONS:
-        cells = []
+        cells, raws = [], []
         for task, prim, raw, _ in BENCH:
             v = agg[c][task][prim]
-            d = "" if c == "baseline" else f" ({100 * (v - base[task][prim]):+.1f})"
-            extra = f" / {100 * agg[c][task][raw]:.1f}" if raw else ""
-            cells.append(f"{100 * v:.1f}{d}{extra}")
-        cells.append(f"{100 * agg[c]['gsm8k_truncation_rate']:.1f}")
-        rows.append(f"{LABEL[c]} & " + " & ".join(cells) + r" \\")
-    head = (r"\begin{tabular}{lccccc}\toprule Condition & GSM8K flex. EM & HellaSwag acc\_norm / acc & BoolQ acc & "
-            r"ARC-Easy acc\_norm / acc & GSM8K truncated (\%) \\ \midrule")
-    write(TAB / "t1_bench.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
+            d = "" if c == "baseline" else f" ({100 * (v - base[task][prim]):+.1f})".replace("-", "$-$")
+            cells.append(f"{100 * v:.1f}{d}")
+            raws.append(f"{100 * v:.1f} & {100 * agg[c][task][raw]:.1f}" if raw else f"{100 * v:.1f}")
+        main.append(f"{LABEL[c]} & " + " & ".join(cells) + f" & {100 * agg[c]['gsm8k_truncation_rate']:.1f}" + r" \\")
+        full.append(f"{LABEL[c]} & " + " & ".join(raws) + r" \\")
+    head = (r"\begin{tabular}{lccccc}\toprule Condition & GSM8K & HellaSwag & BoolQ & ARC-Easy & "
+            r"GSM8K truncated (\%) \\ \midrule")
+    write(TAB / "t1_bench.tex", head + "\n" + "\n".join(main) + "\n" + r"\bottomrule\end{tabular}")
+    head = (r"\begin{tabular}{lcccccc}\toprule & GSM8K & \multicolumn{2}{c}{HellaSwag} & BoolQ & \multicolumn{2}{c}{ARC-Easy} \\ "
+            r"Condition & Exact match & Normalized & Raw & Accuracy & Normalized & Raw \\ \midrule")
+    write(TAB / "t1_bench_full.tex", head + "\n" + "\n".join(full) + "\n" + r"\bottomrule\end{tabular}")
 
 
 def table_resources():
+    """Method-specific overhead is stated in the appendix text, so the table stays at natural width."""
     rows = []
-    disp = read_json(ROOT / "results/task1/displacement.json") if (ROOT / "results/task1/displacement.json").exists() else {}
+    disp = read_json(ROOT / "results/task1/displacement.json")
     for m in RUNS:
         r = read_json(run_dir(m) / "resources.json")
         cs = r["checkpoint_sizes"]
-        final = cs.get("final_bytes", 0) / 1e9
-        oh = r["overhead"]
-        note = (f"Copy of $\\theta_0$ ({oh['theta0_bytes'] / 1e9:.1f} GB), {oh.get('theta0_transfer_seconds', 0):.0f} s transfer." if "theta0_bytes" in oh else
-                f"SVD {oh['svd_seconds']:.0f} s, bases {oh['basis_bytes'] / 1e6:.0f} MB." if "svd_seconds" in oh else "--")
         d = f"{disp[m]:.1f}" if m in disp else "--"
         rows.append(f"{LABEL[m]} & {r['trainable_params'] / 1e6:.2f} M & {r['train_seconds'] / 3600:.2f} & "
-                    f"{r['peak_memory_bytes'] / 1e9:.1f} & {final:.3f} & {cs.get('resume_bytes', 0) / 1e9:.2f} & {d} & {note}" + r" \\")
-    head = (r"\begin{tabular}{lccccccl}\toprule Run & Trainable & Train hours & Peak GB & Final ckpt GB & Resume ckpt GB & "
-            r"$\lVert\theta-\theta_0\rVert_2$ & Method overhead \\ \midrule")
+                    f"{r['peak_memory_bytes'] / 1e9:.1f} & {cs['final_bytes'] / 1e9:.3f} & {cs['resume_bytes'] / 1e9:.2f} & {d}" + r" \\")
+    head = (r"\begin{tabular}{lcccccc}\toprule Run & Trainable & Hours & Peak memory (GB) & Final checkpoint (GB) & "
+            r"Resume checkpoint (GB) & $\lVert\theta-\theta_0\rVert_2$ \\ \midrule")
     write(TAB / "t1_resources.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
 
 
