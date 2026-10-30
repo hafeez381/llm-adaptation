@@ -274,7 +274,9 @@ class Trainer:
             row = self.step()
             append_jsonl(self.log_path, row)
             rows.append(row)
-            if self.update in cfg["ckpt_updates"]:
+            # extra resume points between the PDF's recovery checkpoints (small adapter states only)
+            every = cfg.get("resume_every", {}).get(cfg["kind"], 0)
+            if self.update in cfg["ckpt_updates"] or (every and self.update % every == 0):
                 self.snapshot(keep_weights=self.update in cfg["keep_weights_at"])
         self.write_resources()
         for name in ("train_log.jsonl", "resources.json", "config.json"):  # results never live only on the VM
