@@ -46,25 +46,30 @@ def fig_curves():
 
 
 def table_final():
+    """Appendix tables, one per suite, transposed: metrics as rows, the four image conditions as columns."""
     s = read_json(RES / "final/summary.json")
     a = read_json(RES / "final/advantages.json")
-    rows = []
     for suite, name in SUITES.items():
-        for c in CONDITIONS:
-            d = s[f"{suite}|{c}"]
-            types = " / ".join(f"{100 * v:.1f}" for _, v in sorted(d["by_type"].items()))
-            rows.append(f"{name} & {c.replace('_', ' ')} & {100 * d['accuracy']:.1f} & {types} & {100 * d['pair_accuracy']:.1f} & "
-                        f"{100 * d['identical_answer_rate']:.1f} & {100 * d['empty_rate']:.1f} & {d['mean_reference_nll']:.2f} & "
-                        f"{1000 * d['seconds_per_answer']:.0f}" + r" \\")
+        d = {c: s[f"{suite}|{c}"] for c in CONDITIONS}
+        types = sorted(d["correct"]["by_type"])
+        rows = [("Accuracy (\\%)", lambda x: f"{100 * x['accuracy']:.1f}")]
+        rows += [(f"{t.capitalize()} accuracy (\\%)", lambda x, t=t: f"{100 * x['by_type'][t]:.1f}") for t in types]
+        rows += [("Pair accuracy (\\%)", lambda x: f"{100 * x['pair_accuracy']:.1f}"),
+                 ("Identical answers in a pair (\\%)", lambda x: f"{100 * x['identical_answer_rate']:.1f}"),
+                 ("Empty answers (\\%)", lambda x: f"{100 * x['empty_rate']:.1f}"),
+                 ("Reference NLL", lambda x: f"{x['mean_reference_nll']:.2f}"),
+                 ("Milliseconds per answer", lambda x: f"{1000 * x['seconds_per_answer']:.0f}")]
+        body = [f"{label} & " + " & ".join(f(d[c]) for c in CONDITIONS) + r" \\" for label, f in rows]
+        comp = d["complementary"]
+        body.append(r"\midrule Swap answers matching the partner / neither (\%) & -- & "
+                    f"{100 * comp['follows_partner']:.1f} / {100 * comp['neither']:.1f} & -- & --" + r" \\")
         acc, nll = a[f"{suite}|accuracy"], a[f"{suite}|nll"]
-        comp = s[f"{suite}|complementary"]
-        rows.append(rf"\multicolumn{{9}}{{l}}{{\footnotesize {name}: correct-image advantage {100 * acc['diff']:+.1f} pp "
-                    rf"[{100 * acc['lo']:+.1f}, {100 * acc['hi']:+.1f}], NLL advantage {nll['diff']:+.2f} "
-                    rf"[{nll['lo']:+.2f}, {nll['hi']:+.2f}]; under the swap {100 * comp['follows_partner']:.0f}\% follow the partner, "
-                    rf"{100 * comp['neither']:.0f}\% match neither}} \\ \midrule")
-    head = (r"\begin{tabular}{llccccccc}\toprule Suite & Image & Accuracy & By type & Pair acc. & Identical & Empty & "
-            r"Ref. NLL & ms/answer \\ \midrule")
-    write(TAB / "t2_final.tex", head + "\n" + "\n".join(rows).removesuffix(r" \midrule") + "\n" + r"\bottomrule\end{tabular}")
+        body.append(r"Correct-image advantage, accuracy (pp) & \multicolumn{4}{c}{"
+                    f"{100 * acc['diff']:+.1f} [{100 * acc['lo']:+.1f}, {100 * acc['hi']:+.1f}]" + r"} \\")
+        body.append(r"Correct-image advantage, NLL & \multicolumn{4}{c}{"
+                    f"{nll['diff']:+.2f} [{nll['lo']:+.2f}, {nll['hi']:+.2f}]" + r"} \\")
+        head = (r"\begin{tabular}{lcccc}\toprule " + name + r" & Correct & Complementary & Mismatched & No image \\ \midrule")
+        write(TAB / f"t2_final_{suite}.tex", head + "\n" + "\n".join(body) + "\n" + r"\bottomrule\end{tabular}")
 
 
 def table_main():

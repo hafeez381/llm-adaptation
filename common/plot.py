@@ -11,6 +11,9 @@ INK, MUTED, GRID = "#1f1f1e", "#6b6a63", "#e4e3dd"
 WIDTH = 5.5  # inches, one NeurIPS text column
 
 plt.rcParams.update({
+    # body font of the NeurIPS template (Times) for all figure text, including math
+    "font.family": "serif", "font.serif": ["Times New Roman", "Times", "Nimbus Roman", "DejaVu Serif"],
+    "mathtext.fontset": "stix",
     "font.size": 8, "axes.labelsize": 8, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "legend.fontsize": 7.5,
     "axes.edgecolor": MUTED, "axes.labelcolor": INK, "xtick.color": MUTED, "ytick.color": MUTED, "text.color": INK,
     "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.6, "axes.spines.top": False, "axes.spines.right": False,
