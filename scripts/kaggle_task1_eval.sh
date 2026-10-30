@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Push the two Task 1 evaluation kernels once all five training kernels have finished. Kernel A evaluates the
-# baseline and the full-model conditions; kernel B evaluates the adapters and runs the diagnostics.
+# Push the Task 1 evaluation kernels. Kernel A evaluates the baseline and the full-model conditions (needs Full FT
+# and L2-SP); kernel B evaluates the adapters and runs the diagnostics (needs all five runs).
+# usage: bash scripts/kaggle_task1_eval.sh a|b [a|b]
 set -u
 cd "$(dirname "$0")/.."
 SOURCES='["abdul381/pa3-t1-full-ft", "abdul381/pa3-t1-l2sp", "abdul381/pa3-t1-lora4", "abdul381/pa3-t1-lora16", "abdul381/pa3-t1-oplora16"]'
@@ -19,5 +20,9 @@ EOF
     python3 -c "import time; time.sleep(120)"
   done
 }
-push pa3-t1-eval-a '["baseline", "full_ft@625", "full_ft", "l2sp"]' False
-push pa3-t1-eval-b '["lora4", "lora16", "oplora16"]' True
+for which in "$@"; do
+  case "$which" in
+    a) push pa3-t1-eval-a '["baseline", "full_ft@625", "full_ft", "l2sp"]' False ;;
+    b) push pa3-t1-eval-b '["lora4", "lora16", "oplora16"]' True ;;
+  esac
+done
