@@ -1,0 +1,17 @@
+{
+  "merge_fp32": {
+    "max_abs_logit_diff": 0.00016021728515625,
+    "max_abs_logit": 34.34013366699219,
+    "argmax_agreement": 1.0,
+    "positions": 620,
+    "pass": true
+  },
+  "cast_fp16": {
+    "max_abs_logit_diff": 0.09899520874023438,
+    "max_abs_logit": 34.34013366699219,
+    "argmax_agreement": 0.9983870967741936,
+    "positions": 620,
+    "pass": true
+  },
+  "pass": true
+}
