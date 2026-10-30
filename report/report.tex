@@ -21,6 +21,7 @@
 \makeatletter\setlength{\@fptop}{0pt}\makeatother
 
 \newcommand{\tablebody}[1]{\small\setlength{\tabcolsep}{4pt}\input{#1}}
+\newcommand{\apptable}[1]{\footnotesize\setlength{\tabcolsep}{3pt}\input{#1}}
 
 \renewcommand{\topfraction}{0.9}
 \renewcommand{\bottomfraction}{0.6}
@@ -58,74 +59,82 @@
 \section{Visual Grounding in a Modular Vision-Language Model}
 \label{sec:t2}
 
-A modular vision-language model (VLM) connects a frozen image encoder to a language model through a trainable connector. Here SigLIP-base \citep{siglip} turns each image into 196 patch features $F(I)\in\mathbb R^{196\times768}$, a two-layer MLP connector $g_\phi$ maps every patch into the 1,024-dimensional input space of Qwen3-0.6B \citep{qwen3}, and the resulting visual tokens $Z(I)=s\,g_\phi(F(I))$ replace 196 placeholder tokens in the user turn before the question. A fixed scale $s=0.0546$, the ratio of the mean norm of Qwen's caption-token embeddings (0.872) to that of the untrained connector's outputs (15.97), matched the visual tokens to the size of text embeddings. Training followed the curriculum of \citet{llava}. Stage 1 trained the connector on 18,000 COCO captions \citep{coco} for 2,250 updates, Stage 2 added LoRA on the attention projections and trained on generated presence and counting questions with caption replay for 1,500 updates, and Stage 3 trained on natural VQAv2 questions \citep{vqav2} with replay for 750 updates. The loss averaged each example's answer-token negative log-likelihood (NLL) first, so a one-word answer weighs as much as a caption. A complementary pair applies one question to two images with different answers, so the question alone cannot answer both. We measured image use by swapping in the partner image, an unrelated image from the same suite, or no image, always scoring against the original references, and we report the image-swap penalty $\Delta_{\mathrm{NLL}}=\mathrm{NLL}(y\mid q,I_{\mathrm{partner}})-\mathrm{NLL}(y\mid q,I_{\mathrm{correct}})$.
+A modular vision-language model (VLM) feeds image features into a language model through a trainable connector. SigLIP-base \citep{siglip} encodes each image into 196 patch features $F(I)\in\mathbb R^{196\times768}$, a two-layer MLP connector $g_\phi$ maps each patch into the 1,024-dimensional input space of Qwen3-0.6B \citep{qwen3}, and the visual tokens $Z(I)=s\,g_\phi(F(I))$ replace 196 placeholder tokens in the user turn before the question. The fixed scale $s=0.0546$ matches the mean norm of the visual tokens to that of Qwen's text embeddings on the training captions. A complementary pair applies one question to two images with different answers \citep{vqav2}, so the question alone cannot answer both. We measure image use by replacing the image with the partner image, an unrelated image from the same suite, or no image, always scoring against the original references, and through the image-swap penalty
+\begin{equation}
+\Delta_{\mathrm{NLL}}=\mathrm{NLL}(y\mid q,I_{\mathrm{partner}})-\mathrm{NLL}(y\mid q,I_{\mathrm{correct}}),
+\end{equation}
+where $\mathrm{NLL}$ is the mean per-token negative log-likelihood of the reference answer $y$ to question $q$. Stage 1 trained the connector on 18,000 COCO captions \citep{coco} for 2,250 updates, Stage 2 added LoRA on the attention projections and trained 1,500 updates on generated presence and counting pairs with caption replay, and Stage 3 trained 750 updates on natural VQAv2 pairs with replay. We report 64 annotation-derived and 96 natural test pairs.
 
-\paragraph{Learning a Visual Interface}
-Caption alignment taught the connector to describe images but not to answer questions with them (\Cref{fig:t2}). Stage 1 lowered the development caption loss from 5.32 to 2.37 nats per token, and the later stages left it at 2.36, so caption replay preserved description. During Stage 1 the swap penalty stayed within 0.3 nats of zero on both question suites, and with an image the reference answers were less likely than without one (annotation-derived NLL 6.27 against 5.05 at update 2,250). The connector had learned the caption distribution, so an image steered the frozen model toward a description rather than a short answer. Stage 2 changed this within 250 updates, as the correct-image NLL on annotation-derived questions fell to 0.63 and the swap penalty rose to 2.82, because LoRA and the connector now fitted answers that depend on the image. Stage 3 lowered the natural-question NLL from 1.55 to 0.96 but also lowered the no-image NLL from 2.51 to 1.86 and the annotation-derived swap penalty from 4.47 to 3.01, so natural VQAv2 training strengthened answers that need no image as well as image use.
+\paragraph{Image use began with question training, not caption alignment.}
+\citet{llava} train the connector on captions first so that visual features land where the language model expects its inputs, and we expected this alignment to make the image informative for questions as well. During Stage 1 the swap penalty stayed within 0.3 nats of zero on both question suites (\Cref{fig:t2}c), and with an image the reference answers were less likely than without one, because the connector had learned the caption distribution and an image steered the frozen model toward a description instead of a short answer. Within 250 updates of Stage 2 the annotation-derived swap penalty reached 2.82 nats (\Cref{fig:t2}c), since LoRA and the connector now fitted answers that change with the image. Stage 3 lowered the no-image NLL on natural questions from 2.51 to 1.86 (\Cref{fig:t2}b) along with the swap penalty, so natural VQAv2 training strengthened answers that need no image as well as image use, while caption replay held the caption loss at 2.36 (\Cref{fig:t2}a).
 
 \begin{figure}[t]
   \centering
   \includegraphics{figures/t2_curves.pdf}
-  \caption{Training loss with development caption loss (a), reference-answer NLL with and without the image (b), and the image-swap penalty $\Delta_{\mathrm{NLL}}$ (c) for both question suites. Dotted lines mark the stage boundaries at updates 2,250 and 3,750. Image use appeared only once question training began in Stage 2.}
+  \caption{Training and development caption loss (a), reference-answer NLL with and without the image (b), and the image-swap penalty $\Delta_{\mathrm{NLL}}$ (c). Dotted lines mark the stage boundaries. Image use appeared only once question training began.}
   \label{fig:t2}
 \end{figure}
 
-\paragraph{Grounding and Generalization}
-Answers depended strongly on the image for template questions and weakly for natural ones (\Cref{tab:t2}). On the annotation-derived test suite, accuracy fell from 65.6\% with the correct image to 18.8\% under the complementary swap, a correct-image advantage of 46.9 percentage points (pp) with a 95\% interval of 32.0 to 61.7 pp from 4,000 resamples of complete pairs. Under the swap, 65.6\% of answers matched the partner image's reference, so the model read the presence or count from the image in front of it. Presence questions reached 90.6\% and counting 40.6\%, a gap consistent with counting several separate instances being harder than detecting one. On natural VQAv2 the advantage was 16.2 pp (8.2 to 24.0), only 44.3\% of swapped answers followed the partner, and 28.1\% matched neither reference. The model gave one answer to both images of a natural pair in 62.5\% of pairs, against 23.4\% for annotation-derived pairs, so many natural answers came from the question's wording, which can be right for at most one image of a pair. Pair accuracy therefore stayed at 13.5\%, and the no-image accuracy of 36.3\% shows how far wording alone reaches on these questions.
+\paragraph{Template answers followed the image, natural answers often did not.}
+Complementary pairs are built so that a model answering from the question's wording alone cannot get both images right \citep{vqav2}, so a grounded model should lose accuracy under the swap and give the partner image's answer instead. On annotation-derived questions accuracy fell from 65.6\% with the correct image to 18.8\% under the swap (\Cref{tab:t2}), and 65.6\% of swapped answers matched the partner image's reference, so the model read presence and counts from the image in front of it. Counting reached 40.6\% against 90.6\% for presence (\Cref{app:t2}, \Cref{tab:t2full}), consistent with a count needing several separate instances rather than one detected object. On natural VQAv2 the correct-image advantage shrank to 16.2 pp (95\% interval 8.2 to 24.0 pp over 4,000 pair resamples), and the model gave one answer to both images in 62.5\% of natural pairs, against 23.4\% of annotation-derived pairs. A wording-driven answer is right for at most one image of a pair, which held natural pair accuracy at 13.5\%.
 
 \begin{table}[t]
   \centering
-  \caption{Final-test results under the four image conditions. Accuracy is normalized exact match (annotation-derived) or VQA soft accuracy (natural VQAv2), pair accuracy requires both answers of a pair to match their own references, and reference NLL is the mean per-token NLL of the original answer. Swapping in the partner image cost far more on template questions than on natural ones.}
+  \caption{Final-test accuracy (normalized exact match for annotation-derived pairs, VQA soft accuracy for VQAv2), pair accuracy and reference NLL under four image conditions. The partner image cost far more on template questions than on natural ones.}
   \label{tab:t2}
   \tablebody{tables/t2_main.tex}
 \end{table}
 
-\paragraph{Measuring Image Use}
-Likelihood, accuracy and pair metrics agreed on direction and disagreed on size. The correct image lowered reference NLL in both suites, by 2.04 nats on annotation-derived questions and 0.72 nats on VQAv2, both intervals above zero. On VQAv2, however, no image (36.3\%) scored higher than a mismatched image (27.9\%) at equal reference NLL (2.22 and 2.21), so a wrong image misled generation more than it lowered the likelihood of the right answer. Teacher-forced likelihood also registered image use on natural pairs while greedy generation often emitted one answer for both images, because a likelihood shift that raises the reference need not make it the top-ranked answer. The rule-selected examples show both regimes. For ``How many stop signs can you see?'' (references 1 and 3) the model answered 1 and 3, and 3 and 1 after the swap, while for ``What color is the couch?'' (references red and black) it answered white for both images under both conditions.
+\paragraph{Likelihood registered image use that greedy generation hid.}
+Teacher-forced likelihood scores the reference answer while generation commits to the top-ranked one, so the two need not agree on whether the image is used. The correct image lowered the reference NLL on VQAv2 by 0.72 nats (interval 0.46 to 0.99), yet generation gave one answer to both images in most natural pairs, because raising the reference's probability does not make it the top-ranked answer. On VQAv2 no image also scored higher than an unrelated image (36.3\% against 27.9\%) at equal reference NLL (\Cref{tab:t2}), so a wrong image misled generation more than it lowered the likelihood of the right answer. The rule-selected examples (smallest pair id per outcome class) show both regimes. For ``How many stop signs can you see?'' (references 1 and 3) the model answered 1 and 3, and 3 and 1 after the swap, while for ``What color is the couch?'' (references red and black) it answered white for both images under both conditions.
 
-\paragraph{Capabilities and Cost}
-The model answered presence questions well and failed at counting and open-ended questions (62.2\% on yes/no, 49.6\% on number and 33.6\% on other VQAv2 questions). Stage 1 trained 1.84 M connector parameters for 45.9 minutes and Stages 2--3 trained 6.42 M parameters for 34.8 and 17.2 minutes on one T4 GPU at a peak of 1.67 GB, because the frozen FP16 backbone needs no optimizer state and the image features were computed once in advance (9,387 images in 91.8 s, 2.83 GB). Generation took 37 ms per answer with an image and 18 ms without, since the 196 visual tokens dominate each prompt. These are local results on 64 and 96 test pairs from one training run.
+\paragraph{The visual tokens dominated inference cost.}
+A frozen FP16 backbone needs no optimizer state, so training cost scales with the trainable connector and adapters. Stage 1 trained 1.84 M connector parameters and Stages 2--3 trained 6.42 M with LoRA, all on one T4 GPU at a peak of 1.67 GB, after a one-off feature-caching pass over 9,387 images (\Cref{app:t2}, \Cref{tab:t2res}). Generation took 37 ms per answer with an image against 18 ms without, as the 196 visual tokens make up most of each prompt.
 
 \section{Test-Time Compute}
 \label{sec:t3}
 
-Test-time compute spends generation on one question while the weights stay fixed. Repeated sampling draws $N$ independent rollouts, and a selection rule must then recognize a correct one. Self-consistency \citep{selfconsistency} returns the most frequent answer, highest-score selection returns the rollout with the best quality score, and rank-weighted consensus (RWC) gives each rollout a vote $w_i=(N-r_i)/(N-1)$ by its quality rank $r_i$ and returns the answer with the largest total vote. The quality scores were the mean sampled-token log-probability $L_i$, self-certainty $K_i$, the mean divergence $D_{\mathrm{KL}}(U\Vert p_{i,t})$ of each next-token distribution from uniform \citep{selfcertainty}, and for the VLM the visual engagement $V_i$, i.e.\ the image's share of attention, and VisConf $Z_i=V_iC_i$, where $C_i$ is self-certainty calibrated to $[0,1]$ by the 5th and 95th percentiles of the revealed candidates \citep{visconf}. Oracle coverage, the fraction of questions with at least one correct candidate, bounds every selector. We used 32 supplied rollouts per question from Qwen2.5-3B-Instruct on 1,000 MATH problems \citep{math} and from Qwen2.5-VL-3B-Instruct on 1,000 MathVista questions \citep{mathvista}, evaluated nested prefixes of ten seeded rollout orders, and report the 800 held-out questions of each dataset.
+Test-time compute spends extra generation on one question while the weights stay fixed. Repeated sampling draws $N$ independent rollouts and a selection rule must recognize a correct one. Self-consistency returns the most frequent answer \citep{selfconsistency}, highest-score selection returns the best-scored rollout, and rank-weighted consensus (RWC) gives rollout $i$ a vote $w_i=(N-r_i)/(N-1)$ from its quality rank $r_i$ (rank 1 is best) and returns the answer $\hat a=\arg\max_a\sum_{i:a_i=a}w_i$. The quality scores are the mean sampled-token log-probability $L_i$, self-certainty
+\begin{equation}
+K_i=\frac1{T_i}\sum_{t=1}^{T_i}D_{\mathrm{KL}}\big(U\,\Vert\,p_{i,t}\big),
+\end{equation}
+the mean divergence of each next-token distribution $p_{i,t}$ of the $T_i$-token rollout from the uniform distribution $U$ \citep{selfcertainty}, and for the VLM the visual engagement $V_i$, the image's share of attention, and VisConf $Z_i=V_iC_i$, where $C_i$ is the mean token self-certainty calibrated to $[0,1]$ by the 5th and 95th percentiles of the revealed candidates \citep{visconf}. Oracle coverage, the fraction of questions with at least one correct candidate, bounds every selector. We used 32 supplied rollouts per question from Qwen2.5-3B-Instruct on 1,000 MATH problems \citep{math} and Qwen2.5-VL-3B-Instruct on 1,000 MathVista questions \citep{mathvista}, evaluated nested prefixes of ten seeded rollout orders, and report the 800 held-out questions per dataset.
 
-\paragraph{Exploration and Selection}
-Selection, not sampling, limited repeated sampling at large budgets (\Cref{fig:t3sel}). On MATH, oracle coverage rose from 64.3\% at one rollout to 91.4\% at 32, while self-consistency rose only to 73.8\%. At $N=32$, 8.6\% of question orders had no correct candidate and 17.6\% had one that self-consistency missed (\Cref{tab:t3}). Each added rollout mostly repeated an existing answer and occasionally added a new wrong one, so the mean number of answer groups grew from 1.93 at $N=4$ to 5.90 at $N=32$ and a correct minority answer had to outvote more alternatives. MathVista showed a larger selection gap (26.4\% against 9.8\% sampling failures) because its lower per-rollout accuracy, 54.3\% against 66.3\%, left the correct answer in the minority more often.
+\paragraph{Selection, not sampling, limited repeated sampling.}
+\citet{selfconsistency} show that voting over more sampled reasoning paths raises accuracy, and we expected the gain to follow oracle coverage. On MATH, coverage rose from 64.3\% at one rollout to 91.4\% at 32 while self-consistency reached 73.8\% (\Cref{fig:t3sel}a). At $N=32$, 17.6\% of question orders had a correct candidate that self-consistency missed, against 8.6\% with none (\Cref{app:t3}, \Cref{tab:t3fail}), because each added rollout mostly repeated an existing answer and occasionally added a new wrong one, so the mean number of distinct answers grew from 1.93 at $N=4$ to 5.90 at $N=32$. MathVista showed a larger selection gap (\Cref{fig:t3sel}b) as its lower per-rollout accuracy, 54.3\% against 66.3\%, left the correct answer in the minority more often.
 
 \begin{figure}[t]
   \centering
   \includegraphics{figures/t3_selection.pdf}
-  \caption{Held-out accuracy and oracle coverage against the number of candidates $N$, averaged over ten rollout orders, for MATH (a) and MathVista (b). The widening distance between coverage and every selector is the selection failure rate.}
+  \caption{Held-out accuracy and oracle coverage against the candidate budget $N$, averaged over ten rollout orders. The distance between coverage and each selector is its selection failure rate.}
   \label{fig:t3sel}
 \end{figure}
 
-\paragraph{Evidence and Consensus}
-Answer agreement carried most of the selection signal, and confidence helped only as a weight on votes. At $N=32$ on MATH, self-certainty with RWC beat self-consistency by 1.8 pp (95\% interval 0.7 to 2.9 pp, 1,000 paired question resamples), whereas the single highest self-certainty fell 3.2 pp below it and the highest mean log-probability fell 9.8 pp below it. Mean log-probability favored long rollouts (mean within-question Spearman correlation with length $+0.22$), and the longest quartile of rollouts was 4.6 pp less often correct than the shortest, because repeated or capped text keeps a high per-token probability. Its accuracy therefore peaked at $N=8$ and fell as more candidates offered more long wrong rollouts. On MathVista, VisConf with RWC reached 64.8\%, 0.8 pp above self-consistency with an interval of $-0.6$ to 2.3 pp, so fusing vision with confidence did not produce a separable gain over voting. Visual engagement correlated strongly and negatively with length (mean within-question Spearman $-0.69$), as attention to the image falls while the generated text grows, so $V_i$ largely encodes brevity. Calibrated confidence and visual engagement were negatively correlated within rollouts (median per-question token correlation $-0.21$), and the tokenwise fusion $Z^{\mathrm{token}}_i=\tfrac1{T_i}\sum_tc_{i,t}v_{i,t}$, which differs from $Z_i$ exactly by this covariance, matched VisConf under RWC ($-0.4$ pp, interval $-1.1$ to $0.3$). These associations are correlational and do not show that the model grounds its answers in the image.
+\paragraph{Confidence helped as a vote weight and hurt as a selector.}
+\citet{selfcertainty} report that self-certainty selection improves as $N$ grows, and \citet{visconf} report that VisConf with RWC outperforms other best-of-$N$ rules on MathVista. At $N=32$ on MATH, self-certainty with RWC beat self-consistency by 1.8 pp (95\% interval 0.7 to 2.9 pp, 1,000 paired question resamples), whereas picking the single most self-certain rollout fell 3.2 pp below it (\Cref{tab:t3}). The highest mean log-probability fell 9.8 pp below because it favored long rollouts (within-question Spearman $+0.22$ with length), and long rollouts were less often correct, as repeated or capped text keeps a high per-token probability (\Cref{app:t3}, \Cref{tab:t3sig}). On MathVista, VisConf with RWC came within the interval of self-consistency ($+0.8$ pp, $-0.6$ to $2.3$ pp), so we did not reproduce the reported gain. Visual engagement correlated with length at a mean within-question Spearman of $-0.69$, since attention to the image falls as the generated text grows, so $V_i$ largely encodes brevity. Fusing confidence and engagement per token instead of per rollout, which differs from $Z_i$ exactly by their within-rollout covariance, changed RWC accuracy by $-0.4$ pp. These associations are correlational and do not show causal visual grounding.
 
 \begin{table}[t]
   \centering
-  \caption{Held-out accuracy (\%) at 8 and 32 candidates, and the accuracy difference from self-consistency at 32 with a 95\% paired bootstrap interval. Voting with a quality weight helped, while picking the single best-scored rollout hurt.}
+  \caption{Held-out accuracy (\%) at 8 and 32 candidates, and the difference from self-consistency at 32 with a 95\% paired bootstrap interval. Quality-weighted voting helped, while selecting one best-scored rollout hurt.}
   \label{tab:t3}
   \tablebody{tables/t3_methods.tex}
 \end{table}
 
-\paragraph{Breadth and Refinement}
-Under one 3,072-token output allowance on 50 MATH questions, sequential refinement answered the most questions (66\%), ahead of three parallel 1,024-token samples with self-consistency (62\%) and one long response (58\%) (\Cref{app:t3}). The allowance hid different costs. The single response averaged 601 output tokens and never reached its cap, the parallel samples used 1,878 output tokens and 87.4 s per question with 21 of 150 samples truncated, and refinement used 1,159 output tokens and 54.7 s. The revision kept the initial answer in 45 of 50 questions, changed it from wrong to correct twice and never the reverse, and both corrections completed an initial response that had been truncated before giving an answer. With 50 questions one question moves accuracy by 2 pp, so these differences rest on two to four questions.
+\paragraph{Sequential refinement completed truncated attempts.}
+\citet{selfrefine} report that asking a model to critique and revise its own output improves it, while independent samples add breadth. Under one 3,072-token output allowance on 50 MATH questions, refinement answered 66\% of questions against 62\% for three parallel 1,024-token samples and 58\% for one long response (\Cref{app:t3}, \Cref{tab:t3live}). The revision kept the initial answer in 45 of 50 questions and changed it from wrong to correct twice, and both corrections completed an initial response that had been truncated before giving an answer. The allowance also hid unequal costs, as the parallel samples used 1,878 output tokens per question against 601 for the long response, which never reached its cap. With 50 questions one question moves accuracy by 2 pp, so the three strategies are not separated.
 
-\paragraph{Adaptive Allocation}
-Stopping when the revealed answers agree spent rollouts only where the vote was undecided (\Cref{fig:t3cost}). The agreement controller, whose threshold $\tau=0.625$ was selected on the 200 development questions, reached 73.6\% on held-out MATH at a mean of 10,139 generated tokens and 11.8 rollouts, against 73.8\% at 21,347 tokens for 32 rollouts, and it stopped after four rollouts in 66.3\% of cases. Of its 5,877 early stops, 660 were wrong and only 51 of these would have been corrected by 32 rollouts, because an early wrong majority usually stays the majority. On MathVista it kept 63.0\% at 2,938 tokens against 63.9\% at 8,898. Requiring the RWC winner to agree as well stopped earlier on MATH at 7,663 tokens and lost 0.6 pp against 32 rollouts. Both controllers lay above the fixed-budget curve at equal cost.
+\paragraph{Agreement-based stopping halved the cost of 32 rollouts.}
+Adaptive-consistency stops sampling once the revealed answers agree \citep{adaptiveconsistency}, which should save rollouts on easy questions at little cost in accuracy. With its threshold $\tau=0.625$ selected on the 200 development questions, the agreement controller reached 73.6\% on held-out MATH at a mean of 10,139 generated tokens, against 73.8\% at 21,347 tokens for 32 rollouts (\Cref{fig:t3cost}a). Of its 660 wrong early stops, 51 would have been corrected by 32 rollouts, because an early wrong majority usually stays the majority. On MathVista it kept 63.0\% at a third of the 32-rollout cost (\Cref{fig:t3cost}b), and both controllers lay above the fixed-budget curve at equal cost.
 
 \begin{figure}[t]
   \centering
   \includegraphics{figures/t3_cost.pdf}
-  \caption{Held-out accuracy against mean generated tokens for fixed budgets and the two adaptive controllers on MATH (a) and MathVista (b). The quality score is self-certainty for MATH and VisConf for MathVista. Adaptive stopping came within 1 pp of the 32-rollout accuracy at a third to a half of its tokens.}
+  \caption{Held-out accuracy against mean generated tokens for fixed budgets and the two adaptive controllers. The quality score is self-certainty for MATH and VisConf for MathVista. Adaptive stopping came within 1 pp of 32 rollouts at a third to a half of the tokens.}
   \label{fig:t3cost}
 \end{figure}
 
-\paragraph{Compute and Reliability}
-Rank-weighted voting with an internal confidence score, combined with agreement-based stopping, gave the best accuracy per token, and their failures came from confident consensus on a wrong answer. No internal signal approached oracle coverage (15.9 pp below it on MATH at $N=32$), and voting can even return the missing-answer group when many rollouts fail to give an answer, which happened on MathVista question 10. Token counts exclude prefill, scoring and the attention export, so the deployment cost of VisConf is higher than shown, and the two datasets differ in model and modality, so their comparison does not isolate the effect of vision.
+\paragraph{Confident consensus on a wrong answer bounded every rule.}
+Every selector can only reorder the answers the model produced, so its ceiling is oracle coverage. Quality-weighted voting with agreement-based stopping gave the best accuracy per token, yet RWC stayed 15.9 pp below coverage on MATH at $N=32$ because the correct answer was often a low-agreement minority. Voting also returned the missing-answer group when many rollouts gave no answer, as on MathVista question 10. Token counts exclude prefill, scoring and the attention export, so VisConf costs more in deployment than \Cref{fig:t3cost} shows, and the two datasets differ in model and modality, so their comparison does not isolate the effect of vision.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -141,13 +150,13 @@ Rank-weighted voting with an internal confidence score, combined with agreement-
 \label{app:t3}
 
 \paragraph{Live Refinement Experiment}
-\Cref{tab:t3live} lists accuracy, actual tokens, runtime and truncation for the three strategies under the same allowance. The sequential strategy is charged for the shared initial response.
+\Cref{tab:t3live} supports the refinement result in \Cref{sec:t3} with accuracy, actual tokens, runtime and truncation for the three strategies. The sequential strategy is charged for the shared initial response and its longer revision prompt.
 
 \begin{table}[H]
   \centering
   \caption{Live comparison on 50 MATH questions with Qwen2.5-3B-Instruct (FP16, batch 1, one T4). Tokens and seconds are per question. Refinement answered the most questions at less output than parallel sampling.}
   \label{tab:t3live}
-  \tablebody{tables/t3_live.tex}
+  \apptable{tables/t3_live.tex}
 \end{table}
 
 \paragraph{Failure Decomposition and Signals}
@@ -157,14 +166,14 @@ Rank-weighted voting with an internal confidence score, combined with agreement-
   \centering
   \caption{Coverage, sampling failures (no correct candidate) and selection failures (a correct candidate missed), in percent of held-out question orders. Selection failures grow with $N$.}
   \label{tab:t3fail}
-  \tablebody{tables/t3_failures.tex}
+  \apptable{tables/t3_failures.tex}
 \end{table}
 
 \begin{table}[H]
   \centering
   \caption{Mean within-question Spearman correlation of each score with rollout length, and the correctness difference between each score's top and bottom quartile of rollouts at $N=32$. Vision scores largely track brevity.}
   \label{tab:t3sig}
-  \tablebody{tables/t3_signals.tex}
+  \apptable{tables/t3_signals.tex}
 \end{table}
 
 \paragraph{Adaptive Stopping}
@@ -174,24 +183,31 @@ Rank-weighted voting with an internal confidence score, combined with agreement-
   \centering
   \caption{Held-out adaptive stopping with thresholds frozen on the development questions, against fixed budgets. Agreement-based stopping halved the cost of 32 rollouts on MATH at $-0.2$ pp.}
   \label{tab:t3adapt}
-  \tablebody{tables/t3_adaptive.tex}
+  \apptable{tables/t3_adaptive.tex}
 \end{table}
 
 \section{Visual Grounding: Supplementary Results}
 \label{app:t2}
 
+\paragraph{Results by Question Type}
+\Cref{tab:t2full} breaks the final-test results of \Cref{tab:t2} down by question type, with the pair diagnostics and the correct-image advantages behind the grounding paragraphs of \Cref{sec:t2}.
+
 \begin{table}[H]
   \centering
-  \caption{Final-test results by question type, with pair diagnostics and the correct-image advantages with 95\% pair-bootstrap intervals. Counting and open-ended questions remained weak.}
+  \caption{Final-test results by question type and image condition, with 95\% pair-bootstrap intervals for the correct-image advantages over the complementary swap. Counting and open-ended questions remained the weakest.}
   \label{tab:t2full}
-  \tablebody{tables/t2_final.tex}
+  \apptable{tables/t2_final_grounding.tex}\par\medskip
+  \apptable{tables/t2_final_vqa.tex}
 \end{table}
+
+\paragraph{Training Cost}
+\Cref{tab:t2res} gives the trainable parameters, time and peak memory per stage behind the cost paragraph of \Cref{sec:t2}.
 
 \begin{table}[H]
   \centering
   \caption{Training cost by stage on one T4 GPU, with the one-off feature caching. The frozen backbone kept peak memory under 1.7 GB.}
   \label{tab:t2res}
-  \tablebody{tables/t2_resources.tex}
+  \apptable{tables/t2_resources.tex}
 \end{table}
 
 \end{document}
