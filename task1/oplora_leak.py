@@ -28,6 +28,7 @@ def leak_report(W0: torch.Tensor, A: torch.Tensor, B: torch.Tensor, scale: float
     dW2 = scale * B @ A2
     share = lambda c, n: float(c[-n:].sum() / c.sum()) if c.sum() else 0.0
     return {"sigma_k_over_k1": float(S[k - 1] / S[k]),
+            "top_k_energy_share": float((S[:k] ** 2).sum() / (S ** 2).sum()), "top_k_dim_share": k / W0.shape[0],
             "A_overlap": float(colA.sum().sqrt() / A.norm()), "B_overlap": float(colB.sum().sqrt() / B.norm()),
             "A_share_last4": share(colA, 4), "A_share_last16": share(colA, 16),
             "B_share_last4": share(colB, 4), "B_share_last16": share(colB, 16),

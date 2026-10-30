@@ -83,19 +83,34 @@ def table_resources():
 
 
 def table_diag():
+    """One row per model; each cell lists layers 0 / 13 / 27, so the table stays narrow."""
     d = read_json(ROOT / "results/task1/diagnostics/weight_activation.json")
     rows = []
     for m in ["full_ft@625", "full_ft", "l2sp", "lora4", "lora16", "oplora16"]:
-        rs = {r["layer"]: r for r in d["rows"] if r["model"] == m}
-        cells = []
-        for l in d["layers"]:
-            r = rs[l]
-            cells.append(f"{r['rho_k']:.3f} & {r['eta']:.4f} & {r['R_math_mean']:.4f} & {r['R_nonmath_mean']:.4f}")
-        rows.append(f"{LABEL[m]} & " + " & ".join(cells) + r" \\")
-    hdr = " & ".join(rf"\multicolumn{{4}}{{c}}{{Layer {l}}}" for l in d["layers"])
-    sub = " & ".join([r"$\rho_k$ & $\eta$ & $R$ math & $R$ other"] * len(d["layers"]))
-    head = (r"\begin{tabular}{l" + "cccc" * len(d["layers"]) + r"}\toprule & " + hdr + r" \\ Model & " + sub + r" \\ \midrule")
+        rs = [next(r for r in d["rows"] if r["model"] == m and r["layer"] == l) for l in d["layers"]]
+        cell = lambda key, fmt: " / ".join(format(r[key], fmt) for r in rs)
+        rows.append(f"{LABEL[m]} & {cell('rho_k', '.3f')} & {cell('eta', '.3f')} & "
+                    f"{' / '.join(format(100 * r['R_math_mean'], '.1f') for r in rs)} & "
+                    f"{' / '.join(format(100 * r['R_nonmath_mean'], '.1f') for r in rs)}" + r" \\")
+    head = (r"\begin{tabular}{lcccc}\toprule Model & $\rho_k$ & $\eta$ & $R$ math (\%) & $R$ non-math (\%) \\ \midrule")
     write(TAB / "t1_diagnostics.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
+
+
+def table_boolq():
+    b = read_json(ROOT / "results/task1/boolq_bias.json")
+    rows = [f"{LABEL[c]} & {100 * b[c]['pred_yes']:.1f} & {100 * b[c]['acc_gold_yes']:.1f} & {100 * b[c]['acc_gold_no']:.1f}"
+            + r" \\" for c in CONDITIONS]
+    head = r"\begin{tabular}{lccc}\toprule Condition & Predicted yes (\%) & Acc. gold yes & Acc. gold no \\ \midrule"
+    write(TAB / "t1_boolq.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
+
+
+def table_qual():
+    s = read_json(ROOT / "results/task1/qual/annotation_summary.json")["per_condition"]
+    cols = ["format_violation", "incoherent", "repetition", "math_framing", "inappropriate", "truncated"]
+    rows = [f"{LABEL[c]} & " + " & ".join(str(s[c][k]) for k in cols) + r" \\" for c in CONDITIONS]
+    head = (r"\begin{tabular}{lcccccc}\toprule Condition & Format & Incoherent & Repetition & Math framing & "
+            r"Inappropriate & Truncated \\ \midrule")
+    write(TAB / "t1_qual.tex", head + "\n" + "\n".join(rows) + "\n" + r"\bottomrule\end{tabular}")
 
 
 def write(path, text):
@@ -104,7 +119,7 @@ def write(path, text):
 
 
 def main():
-    for f in (fig_loss, table_bench, table_resources, table_diag):
+    for f in (fig_loss, table_bench, table_resources, table_diag, table_boolq, table_qual):
         try:
             f()
         except FileNotFoundError as e:
