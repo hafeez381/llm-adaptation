@@ -46,20 +46,19 @@ def probe_texts(tok, n=8) -> list[str]:
 
 
 def merge_check(merged, unmerged, tok, device) -> dict:
-    """S4: max |logit difference| and argmax agreement over every position of 8 probe prompts."""
-    diffs, agree, total = [], 0, 0
+    """S4: max |logit difference| and argmax agreement over every position of 8 probe prompts (no autocast)."""
+    diffs, agree, total, scale = [], 0, 0, 0.0
     with torch.no_grad():
         for text in probe_texts(tok):
             ids = tok(text, return_tensors="pt").input_ids.to(device)
             a = merged(input_ids=ids).logits.float()
-            with torch.autocast(device.type, dtype=torch.float16, enabled=device.type == "cuda"):
-                b = unmerged(input_ids=ids).logits.float()
+            b = unmerged(input_ids=ids).logits.float()
             diffs.append((a - b).abs().max().item())
+            scale = max(scale, b.abs().max().item())
             agree += int((a.argmax(-1) == b.argmax(-1)).sum())
             total += ids.shape[1]
-    out = {"max_abs_logit_diff": max(diffs), "argmax_agreement": agree / total, "positions": total}
-    out["pass"] = out["max_abs_logit_diff"] <= 5e-2 and out["argmax_agreement"] >= 0.995
-    return out
+    return {"max_abs_logit_diff": max(diffs), "max_abs_logit": scale, "argmax_agreement": agree / total,
+            "positions": total}
 
 
 def resolve(condition: str, store, work: Path, device) -> Path:
@@ -76,25 +75,31 @@ def resolve(condition: str, store, work: Path, device) -> Path:
                            ["config.json", "generation_config.json", "model.safetensors"])
         m = AutoModelForCausalLM.from_pretrained(src, dtype=torch.float16)
     else:
-        from task1.adapters import attach_adapters, cast_backbone_fp16
+        from task1.adapters import attach_adapters
         from task1.train import load_cfg
         exported = torch.load(fetch_folder(store, f"task1/{condition}/final", work / "src" / condition,
                                            ["adapters.pt"]) / "adapters.pt", weights_only=False)
         m = AutoModelForCausalLM.from_pretrained(MODEL, revision=revision(), dtype=torch.float32).to(device)
         merge_adapters(m, exported)
-        m = m.half()
-        # unmerged reference: FP16 frozen backbone + FP32 adapters holding the exported effective factors
+        # unmerged reference in FP32: the released backbone + FP32 adapters holding the exported effective factors
         cfg = load_cfg(condition, "full") | {"project": False}
         u = AutoModelForCausalLM.from_pretrained(MODEL, revision=revision(), dtype=torch.float32).to(device)
         u.requires_grad_(False)
         attach_adapters(u, cfg)
-        cast_backbone_fp16(u)
         from task1.adapters import lora_modules
         with torch.no_grad():
             for n, mod in lora_modules(u):
-                mod.lora_A.copy_(exported[n]["A_eff"])
-                mod.lora_B.copy_(exported[n]["B_eff"])
-        check = merge_check(m.to(device).eval(), u.to(device).eval(), tok, device)
+                mod.lora_A.copy_(exported[n]["A_eff"].to(device))
+                mod.lora_B.copy_(exported[n]["B_eff"].to(device))
+        u.eval()
+        # S4, split in two: the merge itself in FP32 (must match to 1e-3), then the FP16 cast used for evaluation
+        # (top-1 agreement >= 99.5%; FP16 rounding over 28 layers moves logits of size ~30 by ~0.1-0.2)
+        fp32 = merge_check(m.eval(), u, tok, device)
+        m = m.half()
+        fp16 = merge_check(m.eval(), u, tok, device)
+        check = {"merge_fp32": fp32 | {"pass": fp32["max_abs_logit_diff"] <= 1e-3},
+                 "cast_fp16": fp16 | {"pass": fp16["argmax_agreement"] >= 0.995}}
+        check["pass"] = check["merge_fp32"]["pass"] and check["cast_fp16"]["pass"]
         write_json(ROOT / f"results/task1/eval/{condition}/merge_check.json", check)
         assert check["pass"], check
         del u
