@@ -1,0 +1,7 @@
+\begin{tabular}{lccccccl}\toprule Run & Trainable & Train hours & Peak GB & Final ckpt GB & Resume ckpt GB & $\lVert\theta-\theta_0\rVert_2$ & Method overhead \\ \midrule
+Full FT & 596.05 M & 2.38 & 13.9 & 2.384 & 7.15 & -- & -- \\
+Full FT + L2-SP & 596.05 M & 2.48 & 13.9 & 2.384 & 7.15 & -- & $\theta_0$ 2.4 GB, 485 s transfer \\
+LoRA-4 & 2.52 M & 2.52 & 5.0 & 0.010 & 0.03 & -- & -- \\
+LoRA-16 & 10.09 M & 2.51 & 5.2 & 0.040 & 0.12 & -- & -- \\
+OPLoRA-16 & 10.09 M & 3.50 & 5.5 & 0.040 & 0.12 & -- & SVD 31 s, bases 323 MB \\
+\bottomrule\end{tabular}
