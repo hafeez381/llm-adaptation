@@ -19,7 +19,7 @@ from common.results import ROOT, read_json, write_json
 from common.seeding import SEED
 from task1.merge import CONDITIONS, resolve
 
-GSM_CAP, QUAL_CAP, BATCH = 1024, 512, 32
+GSM_CAP, QUAL_CAP, BATCH, LL_BATCH = 1024, 512, 32, 8  # LL_BATCH: full-vocab logits at 32 overflow a 15 GB T4
 LOGLIK = ["hellaswag", "boolq", "arc_easy"]
 EXPECTED = {"gsm8k_cot": 1319, "hellaswag": 10042, "boolq": 3270, "arc_easy": 2376}
 
@@ -29,10 +29,10 @@ def assert_zero_shot(cfg: dict) -> None:
         raise GuardError(f"evaluation is not zero-shot with the GSM8K chat template: {cfg}")
 
 
-def run_lm_eval(path, tasks, chat: bool, limit, gen_kwargs=None):
+def run_lm_eval(path, tasks, chat: bool, limit, gen_kwargs=None, batch=BATCH):
     import lm_eval
     from lm_eval.models.huggingface import HFLM
-    lm = HFLM(pretrained=str(path), dtype="float16", batch_size=BATCH, enable_thinking=False, max_length=4096,
+    lm = HFLM(pretrained=str(path), dtype="float16", batch_size=batch, enable_thinking=False, max_length=4096,
               device="cuda" if torch.cuda.is_available() else "cpu")
     return lm_eval.simple_evaluate(model=lm, tasks=tasks, num_fewshot=0, apply_chat_template=chat,
                                    gen_kwargs=gen_kwargs, log_samples=True, limit=limit, random_seed=SEED,
@@ -98,7 +98,7 @@ def main():
     store = make_store(args.store)
     path = resolve(args.condition, store, ROOT / "outputs/models", device)
     tok = AutoTokenizer.from_pretrained(path)
-    cfg = {"condition": args.condition, "backend": "lm-eval hf", "dtype": "float16", "batch_size": BATCH,
+    cfg = {"condition": args.condition, "backend": "lm-eval hf", "dtype": "float16", "batch_size": {"gsm8k": BATCH, "loglik": LL_BATCH},
            "num_fewshot": {t: 0 for t in EXPECTED}, "gsm8k_chat_template": True, "enable_thinking": False,
            "gsm8k_gen": {"do_sample": False, "max_gen_toks": GSM_CAP}, "loglik_chat_template": False,
            "qual": {"do_sample": False, "max_new_tokens": QUAL_CAP}, "seed": SEED, "mode": args.mode}
@@ -109,7 +109,7 @@ def main():
     g = run_lm_eval(path, ["gsm8k_cot"], True, limit, f"do_sample=False,max_gen_toks={gsm_cap}")
     t_gsm = time.time() - t0
     t0 = time.time()
-    ll = run_lm_eval(path, LOGLIK, False, limit)
+    ll = run_lm_eval(path, LOGLIK, False, limit, batch=LL_BATCH)
     t_ll = time.time() - t0
     rows = gsm8k_rows(g, tok, gsm_cap)
     agg = {"gsm8k_cot": g["results"]["gsm8k_cot"]} | {t: ll["results"][t] for t in LOGLIK}
