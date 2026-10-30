@@ -33,7 +33,7 @@ def fig_loss():
         axes[0].plot(np.arange(len(y)) + 25, y, color=c, lw=1.2, ls="--" if m == "l2sp" else "-", label=LABEL[m])
     axes[0].set_xlabel("Optimizer update")
     axes[0].set_ylabel("SFT loss (25-update mean)")
-    axes[0].legend(fontsize=6.5)
+    axes[0].legend()
     tag(axes[0], "a")
     rows = read_jsonl(run_dir("l2sp") / "train_log.jsonl")
     u = [r["update"] for r in rows]
@@ -41,7 +41,7 @@ def fig_loss():
     axes[1].plot(u, smooth([r["sft_loss"] for r in rows], 1), color=SERIES[0], lw=0.6, alpha=0.6, label="SFT loss (L2-SP run)")
     axes[1].set_yscale("log")
     axes[1].set_xlabel("Optimizer update")
-    axes[1].legend(fontsize=6.5)
+    axes[1].legend()
     tag(axes[1], "b")
     save(fig, FIG / "t1_loss.pdf")
 
@@ -72,8 +72,8 @@ def table_resources():
         cs = r["checkpoint_sizes"]
         final = cs.get("final_bytes", 0) / 1e9
         oh = r["overhead"]
-        note = (f"$\\theta_0$ {oh['theta0_bytes'] / 1e9:.1f} GB, {oh.get('theta0_transfer_seconds', 0):.0f} s transfer" if "theta0_bytes" in oh else
-                f"SVD {oh['svd_seconds']:.0f} s, bases {oh['basis_bytes'] / 1e6:.0f} MB" if "svd_seconds" in oh else "--")
+        note = (f"Copy of $\\theta_0$ ({oh['theta0_bytes'] / 1e9:.1f} GB), {oh.get('theta0_transfer_seconds', 0):.0f} s transfer." if "theta0_bytes" in oh else
+                f"SVD {oh['svd_seconds']:.0f} s, bases {oh['basis_bytes'] / 1e6:.0f} MB." if "svd_seconds" in oh else "--")
         d = f"{disp[m]:.1f}" if m in disp else "--"
         rows.append(f"{LABEL[m]} & {r['trainable_params'] / 1e6:.2f} M & {r['train_seconds'] / 3600:.2f} & "
                     f"{r['peak_memory_bytes'] / 1e9:.1f} & {final:.3f} & {cs.get('resume_bytes', 0) / 1e9:.2f} & {d} & {note}" + r" \\")

@@ -39,7 +39,7 @@ def fig_curves():
         for b in BOUNDS:
             ax.axvline(b, color="#6b6a63", lw=0.6, ls=":")
         ax.set_xlabel("Update")
-        ax.legend(fontsize=5.5, loc="upper center", bbox_to_anchor=(0.5, -0.36))
+        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.36))
         tag(ax, letter)
     fig.tight_layout()
     save(fig, FIG / "t2_curves.pdf")

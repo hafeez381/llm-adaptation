@@ -14,7 +14,7 @@ plt.rcParams.update({
     # body font of the NeurIPS template (Times) for all figure text, including math
     "font.family": "serif", "font.serif": ["Times New Roman", "Times", "Nimbus Roman", "DejaVu Serif"],
     "mathtext.fontset": "stix",
-    "font.size": 8, "axes.labelsize": 8, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5, "legend.fontsize": 7.5,
+    "font.size": 8, "axes.labelsize": 8, "xtick.labelsize": 8, "ytick.labelsize": 8, "legend.fontsize": 8,
     "axes.edgecolor": MUTED, "axes.labelcolor": INK, "xtick.color": MUTED, "ytick.color": MUTED, "text.color": INK,
     "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.6, "axes.spines.top": False, "axes.spines.right": False,
     "lines.linewidth": 1.5, "lines.markersize": 4, "legend.frameon": False, "savefig.bbox": "tight", "savefig.dpi": 200,
