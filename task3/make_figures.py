@@ -25,7 +25,7 @@ def pct(x, d=1):
 
 
 def fig_selection():
-    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.3), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.0), sharey=True)
     for ax, ds, letter in zip(axes, DS, "ab"):
         s = summ(ds)
         lines = [("oracle", "Oracle coverage", SERIES[7], "--"), ("sc", NAMES["sc"], SERIES[0], "-"),
@@ -42,12 +42,13 @@ def fig_selection():
         ax.set_xlabel("Candidates $N$")
         tag(ax, letter, DS[ds])
     axes[0].set_ylabel("Held-out accuracy / coverage")
-    fig.legend(*axes[1].get_legend_handles_labels(), loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.24))
+    fig.tight_layout()
+    fig.legend(*axes[1].get_legend_handles_labels(), loc="upper center", ncol=3, bbox_to_anchor=(0.5, 0.0))
     save(fig, FIG / "t3_selection.pdf")
 
 
 def fig_cost():
-    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.3))
+    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.0))
     for ax, ds, letter in zip(axes, DS, "ab"):
         s = summ(ds)
         q = "sc_rwc" if ds == "math" else "visconf_rwc"
@@ -63,7 +64,8 @@ def fig_cost():
         ax.set_xlabel("Mean generated tokens per question")
         tag(ax, letter, DS[ds])
     axes[0].set_ylabel("Held-out accuracy")
-    fig.legend(*axes[1].get_legend_handles_labels(), loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.3))
+    fig.tight_layout()
+    fig.legend(*axes[1].get_legend_handles_labels(), loc="upper center", ncol=2, bbox_to_anchor=(0.5, 0.0))
     save(fig, FIG / "t3_cost.pdf")
 
 

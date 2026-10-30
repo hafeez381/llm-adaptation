@@ -26,7 +26,7 @@ def smooth(y, w=25):
 
 
 def fig_loss():
-    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.3))
+    fig, axes = plt.subplots(1, 2, figsize=(WIDTH, 2.0))
     for m, c in zip(RUNS, SERIES):
         rows = read_jsonl(run_dir(m) / "train_log.jsonl")
         y = smooth([r["sft_loss"] for r in rows])

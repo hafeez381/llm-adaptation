@@ -39,9 +39,11 @@ def fig_curves():
         for b in BOUNDS:
             ax.axvline(b, color="#6b6a63", lw=0.6, ls=":")
         ax.set_xlabel("Update")
-        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.36))
         tag(ax, letter)
     fig.tight_layout()
+    for ax in axes:  # each panel's legend hangs below the figure edge, under its own panel
+        box = ax.get_position()
+        ax.legend(loc="upper center", bbox_to_anchor=((box.x0 + box.x1) / 2, 0.0), bbox_transform=fig.transFigure)
     save(fig, FIG / "t2_curves.pdf")
 
 
