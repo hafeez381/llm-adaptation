@@ -1,0 +1,28 @@
+{
+  "condition": "l2sp",
+  "backend": "lm-eval hf",
+  "dtype": "float16",
+  "batch_size": {
+    "gsm8k": 32,
+    "loglik": 8
+  },
+  "num_fewshot": {
+    "gsm8k_cot": 0,
+    "hellaswag": 0,
+    "boolq": 0,
+    "arc_easy": 0
+  },
+  "gsm8k_chat_template": true,
+  "enable_thinking": false,
+  "gsm8k_gen": {
+    "do_sample": false,
+    "max_gen_toks": 1024
+  },
+  "loglik_chat_template": false,
+  "qual": {
+    "do_sample": false,
+    "max_new_tokens": 512
+  },
+  "seed": 6304,
+  "mode": "full"
+}
