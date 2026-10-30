@@ -1,4 +1,5 @@
 """C5/C6 Verification: parameter counts, PEFT equivalence, step-0 identity, OPLoRA constraints and init equality."""
+import math
 import torch
 from transformers import AutoConfig, AutoModelForCausalLM
 
@@ -94,3 +95,23 @@ def test_oplora_constraints_after_20_updates(tmp_path):
         assert nrm2 > 0
         assert (Uk @ (Uk.T @ dW)).pow(2).sum() / nrm2 <= 1e-6
         assert (dW @ Vk).norm() / dW.norm() <= 1e-6
+
+
+def test_oplora_leak_report_locates_boundary_rotation():
+    """Factors projected against a basis rotated between directions k and k+1 leak only at the boundary."""
+    from task1.oplora_leak import leak_report
+    g = torch.Generator().manual_seed(0)
+    k, d = 8, 32
+    W0 = torch.randn(d, d, generator=g, dtype=torch.float64)
+    U, S, Vh = torch.linalg.svd(W0)
+    V = Vh.T.clone()
+    c, s = math.cos(1e-3), math.sin(1e-3)
+    V[:, [k - 1, k]] = V[:, [k - 1, k]] @ torch.tensor([[c, -s], [s, c]], dtype=torch.float64)  # "other SVD"
+    A = torch.randn(4, d, generator=g, dtype=torch.float64)
+    A = A - (A @ V[:, :k]) @ V[:, :k].T
+    B = torch.randn(d, 4, generator=g, dtype=torch.float64)
+    B = B - U[:, :k] @ (U[:, :k].T @ B)
+    r = leak_report(W0, A, B, 1.0, k)
+    assert 0 < r["A_overlap"] < 1e-2 and r["A_share_last4"] > 0.99
+    assert r["B_overlap"] < 1e-12
+    assert r["right_leak_after_reprojection"] < 1e-12
