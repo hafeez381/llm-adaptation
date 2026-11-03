@@ -23,7 +23,7 @@ pip install -r requirements.txt
 python -m pytest tests -q
 ```
 
-The real runs used Python 3.12 with torch 2.15.0, transformers 5.22.0, peft 0.21.2, datasets 5.1.0, lm_eval 0.4.13 and math-verify 0.9.0 (all pins in `requirements.txt`). Every training and evaluation script takes `--mode {smoke,full}`. `smoke` runs a few steps on a small slice on CPU, and `full` is the real run. The seed is 6304 everywhere. Model and dataset revisions are pinned in `data/manifest.json`.
+The evaluation, VLM and live test-time runs used Python 3.13.15 with torch 2.11.0+cu128, transformers 5.22.0, peft 0.21.2, datasets 5.1.0, lm_eval 0.4.13 and math-verify 0.9.0, as recorded in `results/task1/eval_env.json`, `results/task2/env.json` and `results/task3/live_env.json`. The other pins are in `requirements.txt`. Every training and evaluation script takes `--mode {smoke,full}`. `smoke` runs a few steps on a small slice on CPU, and `full` is the real run. The seed is 6304 everywhere. Model and dataset revisions are pinned in `data/manifest.json`.
 
 Scripts that save checkpoints take `--store`, either a local folder or `hub:<user>/<repo>` for a private Hugging Face repository (it needs an `HF_TOKEN` with write access).
 
