@@ -1,0 +1,15 @@
+{
+  "images": 8,
+  "download_seconds": 1.742987871170044,
+  "encode_seconds": 127.73554396629333,
+  "peak_memory_bytes": null,
+  "storage_bytes": 2410586,
+  "sha256": "4564acf99cd03e8e86f20e03fa6018a77a5b6ca1fcdae2405a7452df629e22fb",
+  "determinism_max_abs": 0.0,
+  "reapply_post_layernorm_changes_by": 100.3125,
+  "dtype": "float16",
+  "grid": [
+    14,
+    14
+  ]
+}
