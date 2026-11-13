@@ -35,13 +35,13 @@ def fig_selection():
             lines.append(("visconf_rwc", NAMES["visconf_rwc"], SERIES[6], "-"))
         for m, label, c, ls in lines:
             key = "sc" if m == "oracle" else m
-            ys = [s[f"heldout|{n}|{key}"]["oracle" if m == "oracle" else "acc"] for n in NS]
+            ys = [100 * s[f"heldout|{n}|{key}"]["oracle" if m == "oracle" else "acc"] for n in NS]
             ax.plot(NS, ys, ls, color=c, marker="o", label=label)
         ax.set_xscale("log", base=2)
         ax.set_xticks(NS, [str(n) for n in NS])
-        ax.set_xlabel("Candidates $N$")
+        ax.set_xlabel("Rollouts $N$")
         tag(ax, letter, DS[ds])
-    axes[0].set_ylabel("Held-out accuracy / coverage")
+    axes[0].set_ylabel("Accuracy / coverage (%)")
     fig.tight_layout()
     fig.legend(*axes[1].get_legend_handles_labels(), loc="upper center", ncol=3, bbox_to_anchor=(0.5, 0.0))
     save(fig, FIG / "t3_selection.pdf")
@@ -53,17 +53,17 @@ def fig_cost():
         s = summ(ds)
         q = "sc_rwc" if ds == "math" else "visconf_rwc"
         for m, c in (("sc", SERIES[0]), (q, SERIES[1])):
-            ax.plot([s[f"heldout|{n}|{m}"]["cost"] for n in NS], [s[f"heldout|{n}|{m}"]["acc"] for n in NS],
+            ax.plot([s[f"heldout|{n}|{m}"]["cost"] for n in NS], [100 * s[f"heldout|{n}|{m}"]["acc"] for n in NS],
                     "-o", color=c, label="Self-consistency, fixed $N$" if m == "sc" else "Quality score + RWC, fixed $N$")
         a = ROOT / f"results/task3/adaptive/{ds}_heldout_summary.json"
         if a.exists():
             a = read_json(a)
             for name, c, mk in (("agreement", SERIES[2], "s"), ("quality", SERIES[6], "D")):
-                ax.plot(a[name]["cost"], a[name]["acc"], mk, color=c, markersize=6, label=f"Adaptive, {name}")
+                ax.plot(a[name]["cost"], 100 * a[name]["acc"], mk, color=c, markersize=6, label=f"Adaptive, {name}")
         ax.set_xscale("log")
         ax.set_xlabel("Mean generated tokens per question")
         tag(ax, letter, DS[ds])
-    axes[0].set_ylabel("Held-out accuracy")
+    axes[0].set_ylabel("Held-out accuracy (%)")
     fig.tight_layout()
     fig.legend(*axes[1].get_legend_handles_labels(), loc="upper center", ncol=2, bbox_to_anchor=(0.5, 0.0))
     save(fig, FIG / "t3_cost.pdf")
